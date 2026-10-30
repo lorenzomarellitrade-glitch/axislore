@@ -182,6 +182,7 @@ h1,h2,h3{margin:0;font-weight:650;letter-spacing:-.045em;line-height:1.03;text-w
     </div>
     <div class="show"><div class="top"><span class="eye" style="color:var(--mute)">6 servizi</span><span class="eye" style="color:var(--dim)">Scorri · tocca per girare</span></div><div class="rail" id="r-ib"></div><div class="count" id="k-ib"></div></div>
     <div class="tiles">
+      <div class="tile wide"><span class="eye">Academy · su Telegram</span><span class="big">Tutto in un posto.</span><p>Calcolatore dei lotti, notizie che muovono l'oro e i passi per aprire il conto. <b>Gratis, dentro Telegram.</b></p><a class="cta" href="#" data-link="academy" style="align-self:flex-start;margin-top:10px">Apri l'Academy →</a></div>
       <div class="tile wide"><span class="eye">Il tuo conto</span><span class="big">Resta tuo.</span><p>Non gestiamo il tuo denaro. <b>Decidi tu</b> cosa fare e quanto rischiare.</p></div>
       <div class="tile wide"><span class="eye">Lo so cosa pensi</span><p style="font-size:16px">Sembra l'ennesimo gruppo di trading. <b>Ma entri gratis, vedi come lavoriamo</b> e decidi tu se restare.</p></div>
       <div class="tile no"><span class="eye">Cosa non è</span><span class="big">Promesse.</span><p>Nessuna promessa di guadagno. Non è consulenza.</p></div>
@@ -227,6 +228,7 @@ h1,h2,h3{margin:0;font-weight:650;letter-spacing:-.045em;line-height:1.03;text-w
 <script>
 /* ---------- link: si compilano qui. whatsapp = solo il numero con prefisso, es. 393331234567 ---------- */
 const LINKS={
+  academy:'https://assistenza.inizia-ora.com/academy/',   // mini app Academy del team (senza bot)
   telegram:'https://t.me/IniziaOraForex',     // community Telegram
   salaPro:'https://t.me/IniziaOraForex',      // Sala Pro: l'accesso si chiede nella community
   formazione:'https://t.me/lancillottoo?text=Ciao%21%20Ti%20scrivo%20dal%20link%20in%20bio%3A%20vorrei%20prenotare%20la%20chiamata%20gratuita%20con%20Francesco%20Lamanna.',   // formazione one to one: prenota la chiamata
@@ -247,7 +249,7 @@ const LINKS={
 /* messaggio già scritto dei pulsanti WhatsApp senza configuratore */
 const WA_TXT='Ciao! Ti scrivo dal link in bio: ho un progetto da costruire e vorrei parlartene.';
 /* con il bot attivo (BOT in traccia.js) tutti i pulsanti che portano a scrivere passano dal bot */
-const BOTK={telegram:'community',salaPro:'salapro',formazione:'formazione',strumenti:'strumenti',diario:'diario',whatsapp:'sviluppo'};
+const BOTK={academy:'academy',telegram:'community',salaPro:'salapro',formazione:'formazione',strumenti:'strumenti',diario:'diario',whatsapp:'sviluppo'};
 const CFGT={sito:'s',app:'a',gestionale:'g',ai:'i',trading:'t',altro:'o'},CFGF={login:'l',pagamenti:'p',prenotazioni:'r',notifiche:'n',dashboard:'d',ai:'x'};
 function linkURL(a){const k=a.dataset.link;
   if(BOT&&BOTK[k]){let s=BOTK[k];if(a.dataset.cfg){const[t,f]=a.dataset.cfg.split(': ');s+='-'+(CFGT[t]||'o')+(f?'-'+f.split(', ').map(x=>CFGF[x]||'').join(''):'')}return botURL(s)}
