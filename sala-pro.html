@@ -11,6 +11,39 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="servizi.css">
+<style>
+/* risultati della sala (dati del team via funzione Supabase "risultati"): si vede solo se i dati arrivano */
+.ris{margin-top:34px;border-radius:22px;padding:18px 16px;background:var(--tile);border:1px solid var(--line)}
+.ris .rt{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.ris .rseg{display:flex;gap:4px;margin:14px 0 12px;padding:3px;border-radius:99px;background:var(--bg2);width:max-content}
+.ris .rseg button{border:0;background:none;color:var(--mute);font:600 13px/1 var(--f);padding:8px 14px;border-radius:99px;cursor:pointer}
+.ris .rseg button[aria-selected=true]{background:var(--tile2);color:var(--fg)}
+.ris .rn{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+.ris .rn div{border-radius:14px;padding:10px 7px;background:var(--bg2)}
+.ris .rn b{display:block;color:var(--fg);font-size:clamp(15px,4.2vw,22px);font-weight:650;letter-spacing:-.04em;line-height:1}
+.ris .rn span{display:block;margin-top:5px;font-size:10.5px;color:var(--mute);line-height:1.2}
+.ris .rl{margin-top:10px;display:grid;gap:2px;max-height:230px;overflow:auto}
+.ris .rl p{display:flex;gap:10px;margin:0;padding:7px 2px;border-bottom:1px solid var(--line);font:500 12.5px/1.3 var(--fm);color:var(--soft)}
+.ris .rl p span:last-child{margin-left:auto;color:var(--fg)}
+.ris .rl.mese{max-height:none;overflow:visible}
+.ris .leg{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:0 2px 10px;font:500 11px/1.3 var(--fm);color:var(--mute)}
+.ris .leg i{width:9px;height:9px;border-radius:3px;flex:none}.ris .leg i.p{background:#6ee7a0}.ris .leg i.n{background:#fb8f8f;margin-left:8px}
+.ris .cal{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+.ris .cal .h{font:500 10px/1 var(--fm);letter-spacing:.12em;text-transform:uppercase;color:var(--dim);text-align:center;padding:2px 0 4px}
+.ris .cal .d{border:0;border-radius:11px;padding:6px 2px 7px;min-height:48px;background:var(--bg2);color:var(--mute);text-align:center;font:inherit;cursor:pointer}
+.ris .cal .d small{display:block;font:500 10.5px/1 var(--fm);color:var(--dim)}
+.ris .cal .d b{display:block;margin-top:5px;font-size:clamp(11px,3.2vw,13.5px);font-weight:650;letter-spacing:-.02em;white-space:nowrap;color:var(--mute)}
+/* giorni in profitto verdi, in negativo rossi (Lore, 2026-10-30) */
+.ris .cal .d em{display:block;margin-top:3px;font:500 9.5px/1 var(--fm);font-style:normal;color:var(--dim)}
+.ris .cal .d.p{background:rgba(74,222,128,.13)}.ris .cal .d.p b{color:#6ee7a0}
+.ris .cal .d.n{background:rgba(248,113,113,.13)}.ris .cal .d.n b{color:#fb8f8f}
+.ris .cal .d.f{opacity:.4;cursor:default}.ris .cal .d.x{background:transparent;cursor:default}.ris .cal .d:disabled{cursor:default}
+.ris .cal .d.o{box-shadow:inset 0 0 0 1.5px var(--acc)}.ris .cal .d.s{box-shadow:inset 0 0 0 1.5px var(--fg)}
+.ris .rd{margin:10px 2px 0;min-height:1.4em;font:500 12px/1.4 var(--fm);color:var(--mute)}.ris .rd b{color:var(--fg);font-weight:600}
+.ris .rw{margin:12px 0 0;font-size:11.5px;line-height:1.5;color:var(--dim)}
+.ris .rw b{color:var(--mute);font-weight:600}
+.ris .rt .eye{display:inline}.ris{margin-top:14px!important}
+</style>
 </head>
 <body data-pagina="sala-pro">
 <div class="w">
@@ -24,9 +57,39 @@
   </div>
   <h2>Cosa ricevi.</h2>
   <ul class="ck"><li>Idee operative con ingresso, stop loss e obiettivi (TP).</li><li>Le ricevi anche direttamente nell'app Fynex.</li><li>Archivio delle idee precedenti, consultabile nell'app.</li><li>Assistenza anche dopo l'attivazione.</li></ul>
-  <div class="box" style="margin-top:14px"><p style="margin:0"><b>Senza abbonamento:</b> serve un conto con il broker e i costi di trading restano a tuo carico. Il team riceve una commissione dal broker.</p></div>
+  <div class="box" style="margin-top:14px"><p style="margin:0"><b>Senza abbonamento:</b> serve un conto con il broker e i costi di trading restano a tuo carico. Riceviamo una commissione dal broker.</p></div>
+  <h2>I risultati della sala.</h2>
+  <div class="ris" id="ris" hidden lang="it">
+      <div class="rt"><span class="eye">Risultati della sala · XAUUSD</span><span class="eye" style="color:var(--dim)" id="ris-agg"></span></div>
+      <div class="rseg" role="tablist"><button role="tab" data-r="mese" aria-selected="true">Mese</button><button role="tab" data-r="ieri" aria-selected="false">Ieri</button><button role="tab" data-r="oggi" aria-selected="false">Oggi</button></div>
+      <div class="rn" id="ris-n"></div>
+      <div class="rl" id="ris-l"></div>
+      <p class="rw"><b>Risultati passati: non garantiscono risultati futuri. Non è consulenza.</b> Sono i segnali della sala, non i risultati di un conto: i pips sono contati dal primo prezzo d'ingresso, stop loss compresi; "a target" vuol dire che è stato raggiunto almeno il primo obiettivo (TP1). "Né target né stop": segnali che nei dati di Inizia Ora non risultano né a target né a stop. I giorni con «—» non sono nei dati. Dati di Inizia Ora.</p>
+    </div>
   <h2>Come si accede.</h2>
   <ol class="steps"><li>Entri nella community Telegram</li><li>Tocchi il pulsante Sala Pro</li><li>Invii la richiesta di accesso</li></ol>
+  <h2>Il conto.</h2>
+  <div class="box min"><b>500 $</b><p style="margin:0">Per entrare nella Sala Pro serve un conto con almeno 500 $. <b>L'accesso è gratuito</b>: i soldi restano sul tuo conto, al broker.</p></div>
+  <p class="sub" style="margin-top:18px">Si apre in 4 passi. Tocca un passo per i dettagli.</p>
+  <div class="accs">
+    <details class="acc"><summary><i>1</i>Iscriviti al broker</summary><p>Apri il link di registrazione che ti mandiamo: <b>usa proprio quello</b>, così resti collegato a noi e all'assistenza.</p><p>Inserisci nome, cognome ed <b>un'email che controlli</b>: ti arrivano le credenziali del portale. Poi entra nel portale e completa il profilo: data di nascita, indirizzo, telefono.</p><p class="note">Non arriva l'email? Guarda nello spam, poi scrivi all'assistenza.</p></details>
+    <details class="acc"><summary><i>2</i>Verifica l'identità</summary><p>Carica nel portale un <b>documento d'identità valido</b> e una <b>prova di residenza recente</b> (bolletta o estratto conto). La verifica dura di solito <b>24–48 ore lavorative</b>.</p><p class="note">Se viene respinta, leggi l'email del broker e scrivi all'assistenza prima di rifare l'invio.</p></details>
+    <details class="acc"><summary><i>3</i>Fai il primo deposito</summary><p><b>Bonifico</b>, consigliato per il primo: dal portale, Depositi → Bonifico. Arriva in 1–2 giorni lavorativi. Nella causale scrivi il <b>numero del tuo conto</b>.</p><p><b>Carta</b>: accredito immediato, ma i depositi successivi con la stessa carta devono essere <b>dello stesso importo</b>. Per importi diversi usa il bonifico.</p><p class="note">Per la Sala Pro: almeno 500 $.</p></details>
+    <details class="acc"><summary><i>4</i>Installa l'app MT5</summary><p>Scarica <b>MetaTrader 5</b> da App Store o Google Play, poi «Accedi a un conto esistente» con server, numero conto e password che ti ha mandato il broker.</p><p>Attiva le notifiche di Telegram: le idee operative arrivano in tempo reale.</p></details>
+  </div>
+  <h2>Domande frequenti.</h2>
+  <div class="accs faq">
+    <details class="acc"><summary>Quali dati servono per iscriversi?</summary><p>Nome, cognome e un'email valida. Per la verifica poi servono documento d'identità e prova di residenza.</p></details>
+    <details class="acc"><summary>Quanto ci vuole per iniziare?</summary><p>Poche ore per le credenziali, 24–48 ore lavorative per la verifica, poi il primo deposito.</p></details>
+    <details class="acc"><summary>Quali documenti servono per la verifica?</summary><p>Documento d'identità valido e una prova di residenza recente (bolletta o estratto conto).</p></details>
+    <details class="acc"><summary>La verifica è stata respinta: cosa faccio?</summary><p>Leggi l'email del broker: di solito manca un dato o il documento non si legge. Scrivi all'assistenza prima di rifare l'invio.</p></details>
+    <details class="acc"><summary>Qual è il deposito minimo?</summary><p>Per la Sala Pro serve un conto con almeno 500 $.</p></details>
+    <details class="acc"><summary>Come prelevo e quanto ci mette?</summary><p>Dal portale del broker, sezione Prelievi. I tempi dipendono dal metodo di pagamento.</p></details>
+    <details class="acc"><summary>Perché il prelievo è bloccato?</summary><p>Spesso è la regola della carta (stesso importo del deposito) o una verifica non completa. Scrivi all'assistenza con il numero del conto.</p></details>
+    <details class="acc"><summary>Ho perso la password del portale</summary><p>Usa «password dimenticata» nella pagina di accesso del broker. Se non arriva l'email, scrivi all'assistenza.</p></details>
+    <details class="acc"><summary>Posso aprire un secondo conto?</summary><p>Sì, si chiede un conto aggiuntivo collegato al tuo profilo, senza rifare la verifica.</p></details>
+    <details class="acc"><summary>L'accesso alla Sala Pro si paga?</summary><p>No. L'accesso è gratuito: si attiva con il conto al broker partner e i soldi restano sul tuo conto.</p></details>
+  </div>
   <h2>Anche nell'app.</h2>
   <p class="sub">Con l'app Fynex vedi e consulti tutto da un posto solo: tocchi un livello per copiarne il valore, ritrovi l'archivio, cerchi gli strumenti e leggi le ultime notizie. Dentro c'è anche l'Academy.</p>
   <div class="imgs"><img src="img/app-1.jpg" alt="Un'idea operativa nell'app Fynex" loading="lazy"><img src="img/app-2.jpg" alt="La home dell'app Fynex" loading="lazy"></div>
@@ -38,5 +101,36 @@
   <div class="legal"><p>Le idee operative sono condivise a scopo informativo e non sono consulenza personalizzata. I risultati passati non garantiscono risultati futuri. I CFD sono strumenti complessi e comportano un alto rischio di perdere denaro rapidamente a causa della leva finanziaria.</p><p><a href="note-legali.html">Note legali</a> · <a href="privacy.html">Informativa privacy</a></p></div>
 </div>
 <script src="traccia.js"></script>
+<script>
+/* risultati della sala: funzione Supabase "risultati" (copia dei dati dell'Academy del team). Se non risponde, il blocco resta nascosto.
+   Mese = calendario lun-ven come nell'Academy (tocca un giorno per il dettaglio); Ieri e Oggi = elenco dei segnali */
+(()=>{const URL_RIS=CRM.url+'/functions/v1/risultati',$=id=>document.getElementById(id),box=$('ris');if(!box||!CRM.url)return;
+  const MESI=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+  const f=n=>(n>0?'+':n<0?'−':'')+Math.abs(n).toLocaleString('it-IT'),gm=g=>{const[a,m,d]=g.split('-');return d+'/'+m};
+  const somma=gg=>gg.reduce((t,g)=>({segnali:t.segnali+g.segnali,a_target:t.a_target+g.a_target,stop:t.stop+g.stop,pips:t.pips+g.pips}),{segnali:0,a_target:0,stop:0,pips:0});
+  const numeri=r=>[[r.segnali,'segnali'],[r.a_target,'a target'],[r.stop,'stop loss'],[r.segnali-r.a_target-r.stop,'né target né stop'],[f(r.pips),'pips']].map(x=>'<div><b>'+x[0]+'</b><span>'+x[1]+'</span></div>').join('');
+  const giorno=g=>g?gm(g.giorno)+' · '+g.segnali+' segnali · '+g.a_target+' a target · '+g.stop+' stop'+(g.segnali-g.a_target-g.stop?' · '+(g.segnali-g.a_target-g.stop)+' né target né stop':'')+' · <b>'+f(g.pips)+' pips</b>':'';
+  fetch(URL_RIS).then(r=>r.ok?r.json():Promise.reject()).then(D=>{if(!D||!D.mese)return;
+    const M=D.mese,per={};M.giorni.forEach(g=>per[g.giorno]=g);
+    function calendario(){const[a,m]=M.mese.split('-').map(Number),ultimo=new Date(a,m,0).getDate(),dw=(new Date(a,m-1,1).getDay()+6)%7;
+      let c=['lun','mar','mer','gio','ven'].map(x=>'<div class="h">'+x+'</div>').join('');
+      for(let k=0;k<Math.min(dw,5);k++)c+='<div class="d x"></div>';
+      for(let d=1;d<=ultimo;d++){const w=new Date(a,m-1,d).getDay();if(w===0||w===6)continue;
+        const iso=a+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0'),g=per[iso],fut=iso>D.oggi;
+        if(M.dal&&iso<M.dal){c+='<div class="d x"><small>'+d+'</small></div>';continue}
+        const cl=g&&g.segnali?(g.pips>0?' p':g.pips<0?' n':''):(fut?' f':'');
+        c+='<button type="button" class="d'+cl+(iso===D.oggi?' o':'')+'"'+(g?' data-g="'+iso+'"':' disabled')+'><small>'+d+'</small><b>'+(g&&g.segnali?f(g.pips):fut?'':'—')+'</b>'+(g&&g.segnali?'<em>pips</em>':'')+'</button>'}
+      return '<p class="leg"><i class="p"></i>giorno in profitto (pips positivi)<i class="n"></i>giorno in perdita (pips negativi)</p><div class="cal">'+c+'</div><p class="rd" id="ris-d">Tocca un giorno per il dettaglio.</p>'}
+    function vedi(k){box.querySelectorAll('.rseg button').forEach(b=>b.setAttribute('aria-selected',b.dataset.r===k));
+      const r=k==='mese'?somma(M.giorni):D.risultati[k]||{segnali:0,a_target:0,stop:0,pips:0,lista:[]};
+      $('ris-n').innerHTML=numeri(r);
+      if(k==='mese'){const[a,m]=M.mese.split('-');$('ris-agg').textContent=MESI[m-1]+' '+a+(M.dal&&M.dal.slice(0,7)===M.mese?' · dal '+gm(M.dal):'');
+        $('ris-l').innerHTML=calendario();$('ris-l').classList.add('mese');
+        $('ris-l').querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{$('ris-l').querySelectorAll('.d.s').forEach(x=>x.classList.remove('s'));b.classList.add('s');$('ris-d').innerHTML=giorno(per[b.dataset.g])})}
+      else{$('ris-agg').textContent='agg. '+(D.aggiornato||'');$('ris-l').classList.remove('mese');
+        const l=r.lista||[];$('ris-l').innerHTML=l.length?l.map(x=>'<p><span>'+x.ora+'</span><span>'+x.dir+' · '+(x.esito||'in corso')+(x.aperto?' · aperto':'')+'</span><span>'+f(x.pips)+'</span></p>').join(''):'<p><span>Nessun segnale</span></p>'}}
+    box.querySelectorAll('.rseg button').forEach(b=>b.onclick=()=>{vedi(b.dataset.r);track('click','ib/risultati-'+b.dataset.r)});
+    vedi('mese');box.hidden=false}).catch(()=>{})})();
+</script>
 </body>
 </html>

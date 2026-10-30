@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://cdnjs.cloudflare.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@1&display=swap">
 <style>
 [hidden]{display:none!important}
 /* Layout, sul modello delle pagine prodotto Apple: barra fissa con il pulsante d'azione; apertura corta: migliaia di particelle formano il sito (Build) o il grafico (Markets) e cambiano forma quando cambi porta; poi le due porte con le offerte da sfogliare come oggetti 3D che si girano al tocco; riquadri grandi con le cose da sapere; chiusura con un solo pulsante e note in piccolo. */
@@ -89,23 +89,27 @@ h1,h2,h3{margin:0;font-weight:650;letter-spacing:-.045em;line-height:1.03;text-w
 /* VETRINA 3D: ogni offerta è un oggetto che ruota mentre lo sfogli e si gira quando lo tocchi */
 .show{margin-top:34px}
 .show .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
-.rail{display:flex;gap:14px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;padding:22px 15% 26px;margin:0 -18px;scrollbar-width:none;perspective:900px}
+.rail{display:flex;gap:12px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;padding:18px 22% 22px;margin:0 -18px;scrollbar-width:none;perspective:900px}
 .rail::-webkit-scrollbar{display:none}
-.obj{flex:0 0 70%;scroll-snap-align:center;aspect-ratio:3/4;max-height:430px;position:relative;will-change:transform}
+.obj{flex:0 0 56%;scroll-snap-align:center;aspect-ratio:4/5;max-height:320px;position:relative;will-change:transform}
 .flip{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.3,.9,.2,1)}
 .obj.on .flip{transform:rotateY(180deg)}
+/* Safari iPhone non sempre rispetta backface-visibility (retro con scorrimento): la faccia nascosta si spegne a metà giro */
+.face{transition:visibility 0s linear .3s}
+.back,.obj.on .front{visibility:hidden}
+.obj.on .back{visibility:visible}
 .face{position:absolute;inset:0;border-radius:24px;overflow:hidden;-webkit-backface-visibility:hidden;backface-visibility:hidden;display:flex;flex-direction:column;
   background:linear-gradient(160deg,var(--tile2),var(--tile) 60%);border:1px solid var(--line);box-shadow:0 30px 50px -28px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.08)}
 .face canvas{display:block;width:100%;height:auto;aspect-ratio:16/10}
-.face .tx{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1;min-height:0}
-.face b{font-size:20px;letter-spacing:-.035em;line-height:1.1}
-.face small{color:var(--mute);font-size:13px;line-height:1.45}
+.face .tx{padding:12px 14px 13px;display:flex;flex-direction:column;gap:6px;flex:1;min-height:0}
+.face b{font-size:17px;letter-spacing:-.035em;line-height:1.1}
+.face small{color:var(--mute);font-size:12.5px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .face .hint{margin-top:auto;font:500 10px/1 var(--fm);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
 .back{transform:rotateY(180deg);padding:18px 16px;gap:8px;overflow:auto}
-.back b{font-size:22px}
-.back p{margin:0;color:var(--soft);font-size:13.5px;line-height:1.45}
+.back b{font-size:18px}
+.back p{margin:0;color:var(--soft);font-size:12.5px;line-height:1.45}
 .back .go{margin-top:auto;align-self:flex-start;padding:10px 16px;border-radius:99px;background:var(--cta);color:var(--ctaT);font-weight:600;font-size:13.5px}
-.tag{align-self:flex-start;font:500 9.5px/1 var(--fm);letter-spacing:.12em;text-transform:uppercase;padding:6px 9px;border-radius:99px;border:1px solid var(--line);color:var(--mute)}
+.tag{align-self:flex-start;white-space:nowrap;font:500 9px/1 var(--fm);letter-spacing:.12em;text-transform:uppercase;padding:6px 9px;border-radius:99px;border:1px solid var(--line);color:var(--mute)}
 .tag.on{color:var(--acc);border-color:currentColor}
 .shine{position:absolute;inset:0;border-radius:24px;pointer-events:none;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.09) 45%,transparent 60%);transform:translateX(var(--sx,0%));mix-blend-mode:screen}
 .count{display:flex;justify-content:center;gap:6px}
@@ -146,82 +150,168 @@ h1,h2,h3{margin:0;font-weight:650;letter-spacing:-.045em;line-height:1.03;text-w
 .cfg .fine,.cfg .why1{text-align:center}
 .foot{height:calc(40px + env(safe-area-inset-bottom,0px))}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* risultati della sala (dati del team via funzione Supabase "risultati"): si vede solo se i dati arrivano */
+.ris{margin-top:34px;border-radius:22px;padding:18px 16px;background:var(--tile);border:1px solid var(--line)}
+.ris .rt{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.ris .rseg{display:flex;gap:4px;margin:14px 0 12px;padding:3px;border-radius:99px;background:var(--bg2);width:max-content}
+.ris .rseg button{border:0;background:none;color:var(--mute);font:600 13px/1 var(--f);padding:8px 14px;border-radius:99px;cursor:pointer}
+.ris .rseg button[aria-selected=true]{background:var(--tile2);color:var(--fg)}
+.ris .rn{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+.ris .rn div{border-radius:14px;padding:10px 7px;background:var(--bg2)}
+.ris .rn b{display:block;color:var(--fg);font-size:clamp(15px,4.2vw,22px);font-weight:650;letter-spacing:-.04em;line-height:1}
+.ris .rn span{display:block;margin-top:5px;font-size:10.5px;color:var(--mute);line-height:1.2}
+.ris .rl{margin-top:10px;display:grid;gap:2px;max-height:230px;overflow:auto}
+.ris .rl p{display:flex;gap:10px;margin:0;padding:7px 2px;border-bottom:1px solid var(--line);font:500 12.5px/1.3 var(--fm);color:var(--soft)}
+.ris .rl p span:last-child{margin-left:auto;color:var(--fg)}
+.ris .rl.mese{max-height:none;overflow:visible}
+.ris .leg{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:0 2px 10px;font:500 11px/1.3 var(--fm);color:var(--mute)}
+.ris .leg i{width:9px;height:9px;border-radius:3px;flex:none}.ris .leg i.p{background:#6ee7a0}.ris .leg i.n{background:#fb8f8f;margin-left:8px}
+.ris .cal{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+.ris .cal .h{font:500 10px/1 var(--fm);letter-spacing:.12em;text-transform:uppercase;color:var(--dim);text-align:center;padding:2px 0 4px}
+.ris .cal .d{border:0;border-radius:11px;padding:6px 2px 7px;min-height:48px;background:var(--bg2);color:var(--mute);text-align:center;font:inherit;cursor:pointer}
+.ris .cal .d small{display:block;font:500 10.5px/1 var(--fm);color:var(--dim)}
+.ris .cal .d b{display:block;margin-top:5px;font-size:clamp(11px,3.2vw,13.5px);font-weight:650;letter-spacing:-.02em;white-space:nowrap;color:var(--mute)}
+/* giorni in profitto verdi, in negativo rossi (Lore, 2026-10-30) */
+.ris .cal .d em{display:block;margin-top:3px;font:500 9.5px/1 var(--fm);font-style:normal;color:var(--dim)}
+.ris .cal .d.p{background:rgba(74,222,128,.13)}.ris .cal .d.p b{color:#6ee7a0}
+.ris .cal .d.n{background:rgba(248,113,113,.13)}.ris .cal .d.n b{color:#fb8f8f}
+.ris .cal .d.f{opacity:.4;cursor:default}.ris .cal .d.x{background:transparent;cursor:default}.ris .cal .d:disabled{cursor:default}
+.ris .cal .d.o{box-shadow:inset 0 0 0 1.5px var(--acc)}.ris .cal .d.s{box-shadow:inset 0 0 0 1.5px var(--fg)}
+.ris .rd{margin:10px 2px 0;min-height:1.4em;font:500 12px/1.4 var(--fm);color:var(--mute)}.ris .rd b{color:var(--fg);font-weight:600}
+.ris .rw{margin:12px 0 0;font-size:11.5px;line-height:1.5;color:var(--dim)}
+.ris .rw b{color:var(--mute);font-weight:600}
+/* ---- v16 "all'osso": stesso stile e stesso 3D della v15, meno informazioni ---- */
+html.lenis{height:auto}.lenis.lenis-smooth{scroll-behavior:auto!important}
+.stick{height:clamp(240px,34svh,420px);max-width:620px;margin-inline:auto}
+.eye .eyelg{display:inline-block;height:13px;width:auto;vertical-align:-3px;margin:0 0 0 4px}
+.fs{font-size:17px;font-weight:700;letter-spacing:-.025em;background:linear-gradient(100deg,#F5F7FA 0%,#F5F7FA 38%,var(--cta) 50%,#F5F7FA 62%,#F5F7FA 100%);background-size:320% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:fsflow 5.5s ease-in-out infinite}
+@keyframes fsflow{from{background-position:100% 0}to{background-position:0% 0}}
+@media (prefers-reduced-motion:reduce){.fs{animation:none}}
+.rail{cursor:grab}.rail.drag{cursor:grabbing;scroll-snap-type:none}.rail.drag .obj{pointer-events:none}
+.hl .sub{margin:12px auto 0;max-width:32ch;color:var(--soft);font-size:16.5px}
+.hl .cta{margin-top:18px}
+.risk{margin:6px 0 0;font-size:11.5px;color:var(--dim)}
+.doors .door{padding-block:6px 40px}
+.show{margin-top:30px}
+.also{margin:4px 0 0;text-align:center;font-size:13px;color:var(--mute);line-height:2}
+.also a{display:inline-block;padding:3px 10px;margin:0 2px;border-radius:99px;background:var(--bg2);color:var(--soft);font-size:12.5px;line-height:1.5}
+.yn{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-top:34px}
+.yn .tile ul{list-style:none;margin:2px 0 0;padding:0;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:1.35;color:var(--soft)}
+.yn li{display:grid;grid-template-columns:15px 1fr;gap:6px}
+.yn .si li::before{content:"✓";color:var(--acc);font-weight:700}
+.yn .no li::before{content:"✕";color:var(--no);font-weight:700}
+.yn .no .eye{color:var(--no)}
+.dev2{display:inline-flex;align-items:center;gap:4px;margin-top:16px;padding:8px 14px;border-radius:99px;border:1px solid rgba(185,166,255,.35);color:#B9A6FF;font-size:13px;font-weight:500;transition:background .25s}.dev2 b{font-weight:650}.dev2:active{background:rgba(185,166,255,.12)}
+.dev{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:30px;padding:16px;border-radius:22px;background:var(--tile);border:1px solid var(--line);text-align:left}
+.dev p{margin:0;font-size:13.5px;color:var(--mute);line-height:1.4}.dev p b{display:block;color:var(--fg);font-size:15px;font-weight:600}
+.dev span{flex:none;font-size:13.5px;color:#B9A6FF;font-weight:600}
+.rv{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.2,.8,.2,1),transform .8s cubic-bezier(.2,.8,.2,1)}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none}}
+@media (max-width:350px){.yn{grid-template-columns:1fr}}
+/* ---- v17: struttura "Verdant" (sfondo profondo, pillola, titolo con corsivo, pulsante luminoso, tre schede di vetro), colori nostri ---- */
+.nav{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);width:min(calc(100% - 24px),600px);height:50px;border-radius:99px;border:1px solid var(--line);background:rgba(11,14,18,.62);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);padding:0 8px 0 18px}
+.nav .w{padding:0}
+.hero{position:relative;min-height:min(100svh,960px);display:flex;flex-direction:column;justify-content:flex-end;padding:calc(130px + env(safe-area-inset-top,0px)) 0 28px;text-align:center;overflow:hidden}
+.hero .stick{position:absolute;inset:0;height:auto;max-width:none;margin:0}
+.hero::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(11,14,18,.35) 0%,rgba(11,14,18,0) 16%,rgba(11,14,18,.62) 40%,rgba(11,14,18,.94) 60%,var(--bg) 100%)}
+.hero .w{position:relative;z-index:2}
+.px{position:absolute;left:0;top:0;z-index:1;pointer-events:none;transform:translate(0,-100%);font:500 11px/1 var(--fm);letter-spacing:.1em;text-transform:uppercase;color:var(--mute);white-space:nowrap;transition:opacity .6s}
+.live{position:absolute;left:0;top:0;z-index:1;pointer-events:none;font:500 11px/1 var(--fm);letter-spacing:.1em;text-transform:uppercase;color:#FFD9C2;white-space:nowrap;font-size:13px;transform:translate(14px,-50%);text-shadow:0 0 14px rgba(255,138,76,.7);transition:opacity .6s}
+.live i{display:inline-block;width:6px;height:6px;border-radius:99px;background:var(--cta);margin-right:7px;vertical-align:1px;box-shadow:0 0 10px var(--cta);animation:livedot 1.4s ease-in-out infinite}
+@keyframes livedot{50%{opacity:.35}}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:7px 13px 7px 10px;border-radius:99px;border:1px solid var(--line);background:rgba(255,255,255,.04);font:500 11px/1 var(--fm);letter-spacing:.1em;text-transform:uppercase;color:var(--soft)}
+.badge i{width:6px;height:6px;border-radius:99px;background:var(--cta);box-shadow:0 0 10px var(--cta)}
+.hero h1{margin-top:18px;font-size:clamp(38px,10.4vw,62px);letter-spacing:-.05em;line-height:1}
+.hero h1 em{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weight:400;letter-spacing:-.01em;color:var(--cta)}
+.hero .sub{margin:14px auto 0;max-width:34ch;color:var(--soft);font-size:16.5px}
+.hero .cta{margin-top:22px;padding:15px 26px;box-shadow:0 0 0 1px rgba(255,255,255,.12) inset,0 10px 40px -6px rgba(255,138,76,.65)}
+.ok{margin:14px 0 0;display:flex;flex-wrap:wrap;justify-content:center;gap:6px 14px;font:500 11px/1.3 var(--fm);letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.ok span::before{content:"✓ ";color:var(--cta)}
+.risk{margin:10px 0 0}
+.show{margin-top:-4px}
+.show .top{padding:0 2px}
+/* SFONDO IN MOVIMENTO di tutta la pagina: seta scura con bagliori caldi (shader WebGL su #silk, fisso dietro ogni cosa); il vetro sopra la sfoca */
+html{background:var(--bg)}body{background:transparent}
+#silk{position:fixed;inset:0;width:100%;height:100%;z-index:-1;display:block;pointer-events:none;background:radial-gradient(70% 50% at 30% 30%,rgba(255,138,76,.16),transparent 60%),radial-gradient(60% 50% at 75% 70%,rgba(169,203,228,.1),transparent 60%)}
+.doors{background:transparent}
+.hero::after{background:linear-gradient(180deg,rgba(11,14,18,.35) 0%,rgba(11,14,18,0) 16%,rgba(11,14,18,.55) 40%,rgba(11,14,18,.78) 62%,rgba(11,14,18,.5) 84%,rgba(11,14,18,0) 100%)}
+.foot{height:calc(40px + env(safe-area-inset-bottom,0px))}
+/* VETRO (riferimento: lastra scura spessa, bordo sottile luminoso, riflesso in alto a sinistra).
+   Sulle carte il vetro sta sull'involucro .obj, non sulle facce: una faccia ruotata di 180° non sfoca bene lo sfondo. */
+.tile{position:relative}
+.tile,.obj{background:linear-gradient(135deg,rgba(255,255,255,.085),rgba(255,255,255,.03) 50%,rgba(255,255,255,.06));backdrop-filter:blur(28px) saturate(150%);-webkit-backdrop-filter:blur(28px) saturate(150%);border:1px solid rgba(255,255,255,.26);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 1px 0 0 rgba(255,255,255,.18),inset 0 -1px 0 rgba(255,255,255,.05),0 30px 60px -30px rgba(0,0,0,.95)}
+.obj{border-radius:24px;perspective:900px}
+.obj .flip{inset:-1px}
+.face{background:transparent;border:0;box-shadow:none}
+.tile::before,.face::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(150deg,rgba(255,255,255,.14),rgba(255,255,255,0) 35%)}
+.face{overflow:hidden}
+.face canvas{border-bottom:1px solid rgba(255,255,255,.1)}
+.face .tx{position:relative}
+
+.badge{background:rgba(11,14,18,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.sec{margin-top:40px}
+.steps{counter-reset:s;display:flex;flex-direction:column;margin-top:16px}
+.steps>div{position:relative;display:grid;grid-template-columns:34px 1fr;gap:12px;padding:0 0 18px}
+.steps>div::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:34px;height:34px;border-radius:99px;background:rgba(255,255,255,.05);border:1px solid rgba(255,138,76,.4);font:500 13px var(--fm);color:var(--cta)}
+.steps>div:not(:last-child)::after{content:"";position:absolute;left:16.5px;top:38px;bottom:2px;width:1px;background:linear-gradient(rgba(255,138,76,.5),transparent)}
+.steps b{display:block;font-size:16px;letter-spacing:-.02em;margin-top:6px;color:var(--fg)}
+.steps span{color:var(--mute);font-size:14px}
+.sec .eye{display:block;text-align:center;color:var(--mute)}
+.yn{margin-top:14px}
+.trust{margin-top:44px;text-align:center}
+.trust .eye{color:var(--dim)}
+.trust .lg2{display:inline-flex;align-items:center;gap:8px;margin-top:12px;font-size:17px;font-weight:600;letter-spacing:-.02em}
+.trust .lg2 img{height:24px;width:auto}
+.end{margin-top:40px}
 </style>
 </head>
 <body>
-
+<canvas id="silk" aria-hidden="true"></canvas>
 
 <nav class="nav g"><div class="w">
-  <b><span>In collaborazione con</span><img class="lg" src="logo-inizia-ora.png" alt="" width="17" height="22">Inizia Ora</b>
+  <a class="fs" href="#" data-link="fuoriserie">Fuoriserie</a>
   <a class="pill" href="#" data-link="telegram" id="navcta">Entra gratis</a>
 </div></nav>
 
-<section class="open" id="open" lang="it">
-  <div class="stick" id="stick"><canvas id="gl" aria-hidden="true"></canvas></div>
-  <div class="hl g" id="hl"><div class="w">
-    <span class="eye">Trading · Sviluppo</span>
-    <h1 style="margin-top:8px">Scegli da dove <span class="grad">partire.</span></h1>
-  </div></div>
+<!-- 1 · PRIMO SCHERMO: le particelle riempiono il fondo e diventano il grafico; il testo sta sopra, nella parte scura -->
+<section class="hero open g" id="open" lang="it">
+  <div class="stick" id="stick"><canvas id="gl" aria-hidden="true"></canvas><div class="px" id="px" hidden title="Prezzo indicativo dell'oro: PAXG/USDT, Binance"></div><div class="live" id="live" hidden></div></div>
+  <div class="w" id="hl">
+    <span class="badge"><i></i>Oltre 4.300 iscritti · gratis</span>
+    <h1>Inizia ora. Fai trading <em>con un metodo,</em><br>non a caso.</h1>
+    <p class="sub">Idee operative, formazione e strumenti per il trading sul Forex, in una community gratuita su Telegram. Il conto resta tuo, le decisioni pure.</p>
+    <a class="cta" href="#" data-link="telegram">Entra gratis su Telegram →</a>
+    <p class="ok"><span>Diario di trading in regalo</span><span>Gratis</span><span>Esci quando vuoi</span></p>
+    <p class="risk">I CFD comportano un alto rischio di perdere denaro.</p>
+    <a class="dev2" href="#" data-link="fuoriserie">Siti, app e AI su misura · <b>Fuoriserie Studio</b> →</a>
+  </div>
 </section>
 
-<section class="doors" id="doors" lang="it">
-  <div class="tog g"><div class="seg" id="seg" data-on="ib" role="tablist" aria-label="Scegli una porta">
-    <button role="tab" id="t-ib" aria-controls="p-ib" aria-selected="true" data-tab="ib">Trading</button>
-    <button role="tab" id="t-build" aria-controls="p-build" aria-selected="false" data-tab="build">Sviluppo</button>
-  </div><p class="segdesc" id="segdesc">Community, Sala Pro, formazione</p></div>
+<section class="doors g" id="doors" lang="it"><div class="w">
+  <!-- 2 · COSA TROVI: tre schede di vetro -->
+  <div class="show rv"><div class="top"><span class="eye" style="color:var(--mute)">Cosa trovi · con Inizia Ora <img class="eyelg" src="logo-inizia-ora.png" alt="" width="17" height="22"></span><span class="eye" style="color:var(--dim)">Scorri · tocca per i dettagli</span></div><div class="rail" id="r-ib" data-lenis-prevent></div><div class="count" id="k-ib"></div></div>
+  <p class="also rv">Anche: <a href="#" data-link="pDiario">Diario · gratis</a><a href="#" data-link="academy">Academy</a><a href="#" data-link="pStrumenti">Strumenti AI</a><a href="#" data-link="pCopy">Copy trading · in arrivo</a></p>
 
-  <!-- MARKETS -->
-  <div class="door g" id="p-ib" role="tabpanel" aria-labelledby="t-ib"><div class="w">
-    <div class="lead">
-      <span class="eye">Trading · con Inizia Ora</span>
-      <h2>Entri <span class="grad">gratis</span> nella community.</h2>
-      <p>Da lì scegli il servizio che ti serve, quando ti serve.</p>
-      <a class="cta" href="#" data-link="telegram">Entra gratis su Telegram →</a>
-      <p class="fine">4.362 iscritti · diario in regalo · esci quando vuoi</p>
-      <p class="why1">Perché è gratis? <b>Il broker riconosce al team una commissione</b>: tu non paghi abbonamenti.</p>
+  <!-- 3 · COSA FA E COSA NON FA -->
+  <div class="sec rv"><span class="eye">Chiaro da subito</span>
+    <div class="yn">
+      <div class="tile si"><span class="eye">Cosa fa</span><ul><li>Community aperta e gratuita</li><li>Idee con livelli chiari</li><li>Formazione sui tuoi grafici</li></ul></div>
+      <div class="tile no"><span class="eye">Cosa non fa</span><ul><li>Promesse di guadagno</li><li>Consulenza</li><li>Gestire il tuo denaro</li><li>Recuperare perdite</li></ul></div>
     </div>
-    <div class="show"><div class="top"><span class="eye" style="color:var(--mute)">6 servizi</span><span class="eye" style="color:var(--dim)">Scorri · tocca per girare</span></div><div class="rail" id="r-ib"></div><div class="count" id="k-ib"></div></div>
-    <div class="tiles">
-      <div class="tile wide"><span class="eye">Academy · su Telegram</span><span class="big">Tutto in un posto.</span><p>Calcolatore dei lotti, notizie che muovono l'oro e i passi per aprire il conto. <b>Gratis, dentro Telegram.</b></p><a class="cta" href="#" data-link="academy" style="align-self:flex-start;margin-top:10px">Apri l'Academy →</a></div>
-      <div class="tile wide"><span class="eye">Il tuo conto</span><span class="big">Resta tuo.</span><p>Non gestiamo il tuo denaro. <b>Decidi tu</b> cosa fare e quanto rischiare.</p></div>
-      <div class="tile wide"><span class="eye">Lo so cosa pensi</span><p style="font-size:16px">Sembra l'ennesimo gruppo di trading. <b>Ma entri gratis, vedi come lavoriamo</b> e decidi tu se restare.</p></div>
-      <div class="tile no"><span class="eye">Cosa non è</span><span class="big">Promesse.</span><p>Nessuna promessa di guadagno. Non è consulenza.</p></div>
-      <div class="tile no"><span class="eye">Per chi non è</span><span class="big">Per rifarsi.</span><p>Se devi recuperare perdite o debiti, questa non è la strada.</p></div>
-    </div>
-    <div class="end"><h3>Si parte <span class="grad">dalla community.</span></h3><a class="cta" href="#" data-link="telegram">Entra gratis →</a></div>
-    <div class="legal"><p>I CFD sono strumenti complessi e comportano un alto rischio di perdere denaro rapidamente a causa della leva finanziaria. Valuta se comprendi il funzionamento dei CFD e se puoi permetterti di correre l'alto rischio di perdere il tuo denaro.</p><p><a href="#" data-link="noteLegali">Note legali</a> · <a href="#" data-link="privacy">Informativa privacy</a></p></div>
-  </div></div>
+    <div class="tiles" style="margin-top:10px"><div class="tile wide"><span class="eye">Perché è gratis?</span><p>Il broker ci riconosce una commissione: <b>tu non paghi abbonamenti.</b></p></div></div>
+  </div>
 
-  <!-- BUILD -->
-  <div class="door g" id="p-build" role="tabpanel" aria-labelledby="t-build" hidden><div class="w">
-    <div class="lead">
-      <span class="eye">Sviluppo · su misura</span>
-      <h2>Mi porti un'idea, <span class="grad">te la consegno online.</span></h2>
-      <p>Costruiscilo qui sotto: scegli cosa e cosa deve fare, e mandamelo.</p>
-    </div>
-    <div class="cfg">
-      <div class="cfg-stage"><canvas id="cfgc" aria-hidden="true"></canvas><span class="cfg-tag" id="cfgTag">Il tuo progetto</span></div>
-      <div class="cfg-ui">
-        <span class="eye">1 · Cosa vuoi costruire</span>
-        <div class="chips" id="cfgType"><button data-t="sito">Sito o landing</button><button data-t="app">App</button><button data-t="gestionale">Gestionale</button><button data-t="ai">AI o automazione</button><button data-t="trading">Tool per il trading</button><button data-t="altro">Altro</button></div>
-        <span class="eye">2 · Cosa deve fare</span>
-        <div class="chips" id="cfgFeat"><button data-f="login">Accesso utenti</button><button data-f="pagamenti">Pagamenti</button><button data-f="prenotazioni">Prenotazioni</button><button data-f="notifiche">Notifiche</button><button data-f="dashboard">Dashboard</button><button data-f="ai">Assistente AI</button></div>
-        <p class="cfg-msg"><span>Messaggio pronto</span><q id="cfgMsg"></q></p>
-        <a class="cta" href="#" data-link="whatsapp" data-msg="cfgMsg">Mandalo su Telegram →</a>
-        <p class="fine">Preventivo gratuito · se non fa per te, te lo dico subito</p>
-        <p class="why1">Il primo passo è <b>l'anteprima</b>: vedi come sarà prima che costruisca tutto.</p>
-      </div>
-    </div>
-    <div class="show"><div class="top"><span class="eye" style="color:var(--mute)">Lavori ed esempi</span><span class="eye" style="color:var(--dim)">Scorri · tocca per girare</span></div><div class="rail" id="r-build"></div><div class="count" id="k-build"></div></div>
-    <div class="tiles">
-      <div class="tile wide"><span class="eye">Con chi parli</span><span class="big">Con me.</span><p>Niente intermediari: parli con chi costruisce.</p></div>
-      <div class="tile wide"><span class="eye">Lo so cosa pensi</span><p style="font-size:16px">Lavoro da solo. <b>Ma con l'AI ho la velocità di un team</b> e ogni dettaglio passa da me.</p></div>
-      <div class="tile wide"><span class="eye">Cosa costruisco</span><div class="list"><span>Siti e app</span><span>Gestionali e dati</span><span>AI e automazioni</span><span>Tool per il trading</span><span class="acc">E tutto il resto</span></div><p>Landing 3D, e-commerce, CRM, dashboard, agenti AI, bot Telegram, indicatori ed Expert Advisor MT4 e MT5.</p></div>
-    </div>
-    <div class="end"><h3>Hai già <span class="grad">un'idea?</span></h3><a class="cta" href="#" data-link="whatsapp">Scrivimi su Telegram →</a></div>
-  </div></div>
+  <!-- 4 · con chi: al posto dei loghi "trusted by" -->
+  
+  <div class="sec rv"><span class="eye">Come si parte</span>
+    <div class="steps"><div><p style="margin:0"><b>Entri nella community</b><span>Un tocco, si apre Telegram. Gratis.</span></p></div><div><p style="margin:0"><b>Guardi come lavoriamo</b><span>Senza impegno, quanto vuoi.</span></p></div><div><p style="margin:0"><b>Scegli tu</b><span>Se e quale servizio usare. O esci.</span></p></div></div>
+  </div>
+  <div class="end rv"><h3>Si parte <span class="grad">dalla community.</span></h3><a class="cta" href="#" data-link="telegram">Entra gratis su Telegram →</a><p class="fine">Gratis · esci quando vuoi</p></div>
+  <div class="legal"><p>I CFD sono strumenti complessi e comportano un alto rischio di perdere denaro rapidamente a causa della leva finanziaria. Valuta se comprendi il funzionamento dei CFD e se puoi permetterti di correre l'alto rischio di perdere il tuo denaro. Contenuti a scopo informativo ed educativo, non consulenza. Il grafico dell'oro in alto è indicativo: prezzo spot XAU da gold-api.com, andamento delle 24 ore da PAXG/USDT (Binance) riscalato sullo spot; può differire dalle quotazioni del broker.</p><p><a href="#" data-link="noteLegali">Note legali</a> · <a href="#" data-link="privacy">Informativa privacy</a></p></div>
   <div class="foot"></div>
-</section>
+</div></section>
 
 <script src="traccia.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -240,10 +330,13 @@ const LINKS={
   pStrumenti:'strumenti.html',
   strumenti:'https://t.me/lancillottoo?text=Ciao%21%20Ti%20scrivo%20dal%20link%20in%20bio%3A%20vorrei%20sapere%20costi%20e%20attivazione%20degli%20strumenti%20AI%20e%20degli%20EA%20Veda.',    // strumenti AI
   diario:'https://t.me/lancillottoo?text=Ciao%21%20Ti%20scrivo%20dal%20link%20in%20bio%3A%20vorrei%20ricevere%20il%20Diario%20di%20trading%20Veda.',       // diario di trading
+  fuoriserie:'',   // sito di Fuoriserie Studio: vuoto finché non è online (allora i pulsanti Fuoriserie vanno lì, non al bot)
   whatsapp:'393513473260',     // numero WhatsApp (con prefisso 39)
   noteLegali:'note-legali.html',   // note legali
   privacy:'privacy.html'       // informativa privacy
 };
+/* in anteprima (localhost) niente statistiche nel CRM */
+if(/^(localhost|127\.)/.test(location.hostname))track=()=>{};
 /* statistiche: CRM, SRC e track() stanno in traccia.js (condiviso con le pagine dei servizi) */
 /* indirizzo di un pulsante; WhatsApp con data-msg apre la chat con il messaggio composto nella pagina */
 /* messaggio già scritto dei pulsanti WhatsApp senza configuratore */
@@ -252,6 +345,7 @@ const WA_TXT='Ciao! Ti scrivo dal link in bio: ho un progetto da costruire e vor
 const BOTK={academy:'academy',telegram:'community',salaPro:'salapro',formazione:'formazione',strumenti:'strumenti',diario:'diario',whatsapp:'sviluppo'};
 const CFGT={sito:'s',app:'a',gestionale:'g',ai:'i',trading:'t',altro:'o'},CFGF={login:'l',pagamenti:'p',prenotazioni:'r',notifiche:'n',dashboard:'d',ai:'x'};
 function linkURL(a){const k=a.dataset.link;
+  if(k==='fuoriserie')return LINKS.fuoriserie||(BOT?botURL('sviluppo'):'');
   if(BOT&&BOTK[k]){let s=BOTK[k];if(a.dataset.cfg){const[t,f]=a.dataset.cfg.split(': ');s+='-'+(CFGT[t]||'o')+(f?'-'+f.split(', ').map(x=>CFGF[x]||'').join(''):'')}return botURL(s)}
   if(k==='whatsapp'){const n=LINKS.whatsapp.replace(/\D/g,'');if(!n)return '';const m=a.dataset.msg&&document.getElementById(a.dataset.msg);return 'https://wa.me/'+n+'?text='+encodeURIComponent((m?m.textContent:WA_TXT)+rif('sviluppo'))}
   const u=LINKS[k]||'',sv={formazione:'formazione',strumenti:'strumenti',diario:'diario'}[k];
@@ -327,12 +421,9 @@ const sm=(a,b,x)=>{const t=Math.min(1,Math.max(0,(x-a)/(b-a)));return t*t*(3-2*t
 
 /* ---------- contenuti delle vetrine ---------- */
 const SV=[
-  ['community','Gratis',1,'Community Telegram','Il punto di partenza.','Aperta a tutti: aggiornamenti e confronto con il team. Da qui accedi a tutti gli altri servizi.','Scopri la community','pCommunity'],
-  ['call','1ª chiamata gratis',1,'Formazione ONE TO ONE','Sui tuoi grafici, al tuo ritmo.','Con Francesco Lamanna, 30+ anni sui mercati e autore della Disciplina Veda. La prima chiamata è gratuita, il percorso è a pagamento. Scopo educativo, non consulenza.','Scopri il percorso','percorso'],
+  ['community','Gratis',1,'Community Telegram','Il punto di partenza.','Aperta a tutti: aggiornamenti sui mercati, in sola lettura. Da qui accedi a tutti gli altri servizi.','Scopri la community','pCommunity'],
   ['levels','Senza abbonamento',0,'Sala Pro','Idee operative con livelli chiari.',"Ingresso, stop loss e obiettivo, anche nell'app. Serve un conto con il broker; i costi di trading sono a tuo carico.",'Scopri la Sala Pro','pSalaPro'],
-  ['journal','Gratis',1,'Diario di trading','Piano prima, verifica dopo.',"Scrivi il piano prima di entrare e verifica dopo com'è andata.",'Scopri il diario','pDiario'],
-  ['indicator','Su richiesta',0,'Strumenti AI','EA, indicatori e app.','Expert Advisor MT4 e MT5, indicatori e app. Strumenti di supporto, non consulenza.','Scopri gli strumenti','pStrumenti'],
-  ['copy','In arrivo',0,'Copy trading','Le operazioni si aprono sul tuo conto.','Con il livello di rischio che imposti tu. I risultati passati non garantiscono risultati futuri.','Scopri il copy trading','pCopy']
+  ['call','1ª chiamata gratis',1,'Formazione ONE TO ONE','Sui tuoi grafici, al tuo ritmo.','Con Francesco Lamanna, 30+ anni sui mercati e autore della Disciplina Veda. La prima chiamata è gratuita, il percorso è a pagamento. Scopo educativo, non consulenza.','Scopri il percorso','percorso']
 ];
 const WK=[
   ['landing',1,'3D','Questa pagina','Scena 3D e vetrine da toccare.','Scena 3D, contatti in archivio, modifiche dal telefono.'],
@@ -349,22 +440,34 @@ const WK=[
   ['indicator',0,'Trading','Indicatore MT5','Livelli disegnati in automatico.','Livelli e zone disegnati sul grafico in automatico.']
 ];
 function card(kind,tag,on,title,short,long,go,lk){return '<article class="obj" data-k="'+kind+'"><div class="flip">'
-  +'<div class="face front"><canvas width="512" height="320" aria-hidden="true"></canvas><div class="tx"><span class="tag'+(on?' on':'')+'">'+tag+'</span><b>'+title+'</b><small>'+short+'</small><span class="hint">Tocca per girare ↻</span></div><span class="shine"></span></div>'
+  +'<div class="face front"><canvas width="512" height="320" aria-hidden="true"></canvas><div class="tx"><span class="tag'+(on?' on':'')+'">'+tag+'</span><b>'+title+'</b><small>'+short+'</small><span class="hint">Tocca per i dettagli ↻</span></div><span class="shine"></span></div>'
   +'<div class="face back"><span class="tag'+(on?' on':'')+'">'+tag+'</span><b>'+title+'</b><p>'+long+'</p>'+(go?'<a class="go" href="#" data-link="'+lk+'" onclick="event.stopPropagation()">'+go+' →</a>':'')+'</div>'
   +'</div></article>'}
+/* schede di vetro: una sotto l'altra sul telefono, in fila sul Mac; il disegno è lo stesso delle vecchie vetrine */
 $('r-ib').innerHTML=SV.map(s=>card(s[0],s[1],s[2],s[3],s[4],s[5],s[6],s[7])).join('');
-$('r-build').innerHTML=WK.map(w=>card(w[0],w[1]?'Fatto · '+w[2]:'Esempio · '+w[2],w[1],w[3],w[4],w[5],'')).join('');
 
 /* vetrina 3D: rotazione legata alla posizione nel carosello, giro della scheda al tocco, riflesso che scorre */
-const rails=['ib','build'].map(k=>{const el=$('r-'+k),cnt=$('k-'+k),items=[...el.children];cnt.innerHTML=items.map(()=>'<i></i>').join('');
-  items.forEach((o,i)=>{pal(k,()=>paint(o.querySelector('canvas'),o.dataset.k,i+3));o.addEventListener('click',()=>{const was=o.classList.contains('on');items.forEach(x=>x.classList.remove('on'));if(!was){o.classList.add('on');track('girata',k+'/'+o.dataset.k)}})});
+const rails=['ib'].map(k=>{const el=$('r-'+k),cnt=$('k-'+k),items=[...el.children];cnt.innerHTML=items.map(()=>'<i></i>').join('');
+  items.forEach((o,i)=>{pal(k,()=>paint(o.querySelector('canvas'),o.dataset.k,i+3));o.addEventListener('click',()=>{const was=o.classList.contains('on');items.forEach(x=>x.classList.remove('on'));if(!was){if(i!==r.c){r.t=i;o.scrollIntoView({behavior:RM?'auto':'smooth',block:'nearest',inline:'center'})}o.classList.add('on');track('girata',k+'/'+o.dataset.k)}})});
   const r={k,el,items,dots:[...cnt.children],c:0,q:false};
+  /* margini laterali misurati sulla carta vera (non in %): così la prima e l'ultima si centrano su ogni schermo */
+  const pad=()=>{const W=el.getBoundingClientRect().width,w=Math.min(256,Math.round(W*.56));items.forEach(o=>o.style.flexBasis=w+'px');el.style.paddingLeft=el.style.paddingRight=Math.max(12,(W-w)/2)+'px'};pad();addEventListener('resize',pad);
   r.fan=()=>{r.q=false;const b=el.getBoundingClientRect();if(!b.width)return;const cx=b.left+b.width/2;let best=0,bd=9;
     items.forEach((o,i)=>{const ob=o.getBoundingClientRect(),d=Math.max(-2,Math.min(2,(ob.left+ob.width/2-cx)/ob.width)),a=Math.abs(d);if(a<bd){bd=a;best=i}
       o.style.transform=RM?'':'translateZ('+(-a*120).toFixed(1)+'px) rotateY('+(d*-38).toFixed(2)+'deg)';o.style.opacity=(1-Math.min(1,a)*.4).toFixed(3);
       const sh=o.querySelector('.shine');sh&&sh.style.setProperty('--sx',(d*-60).toFixed(1)+'%')});
-    if(best!==r.c)items.forEach(x=>x.classList.remove('on'));r.c=best;r.dots.forEach((x,i)=>x.classList.toggle('on',i===best))};
+    if(best!==r.c){if(r.t==null){const giro=items.findIndex(x=>x.classList.contains('on'));if(giro!==best)items.forEach(x=>x.classList.remove('on'))}r.c=best}if(best===r.t)r.t=null;r.dots.forEach((x,i)=>x.classList.toggle('on',i===best))};
   el.addEventListener('scroll',()=>{if(!r.q){r.q=true;requestAnimationFrame(r.fan)}},{passive:true});
+  /* mouse: trascina per scorrere; un trascinamento vero non conta come tocco sulla scheda */
+  let dx0=0,sl0=0,moved=false,pid=null;
+  el.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0)return;pid=e.pointerId;dx0=e.clientX;sl0=el.scrollLeft;moved=false});
+  el.addEventListener('pointermove',e=>{if(pid===null||e.pointerId!==pid)return;const d=e.clientX-dx0;if(!moved&&Math.abs(d)>6){moved=true;el.classList.add('drag');el.setPointerCapture(pid)}if(moved)el.scrollLeft=sl0-d});
+  const fine=e=>{if(pid===null)return;pid=null;if(moved){el.classList.remove('drag');el.dataset.drags=(+el.dataset.drags||0)+1;
+    /* la scheda più vicina al centro si calcola dalla posizione reale: l'evento di scroll arriva dopo il rilascio */
+    const b=el.getBoundingClientRect(),cx=b.left+b.width/2;let best=null,bd=1e9;items.forEach(o=>{const ob=o.getBoundingClientRect(),d=Math.abs(ob.left+ob.width/2-cx);if(d<bd){bd=d;best=o}});
+    best&&best.scrollIntoView({behavior:RM?'auto':'smooth',block:'nearest',inline:'center'})}};
+  el.addEventListener('pointerup',fine);el.addEventListener('pointercancel',fine);
+
   new IntersectionObserver(e=>{r.vis=e[0].isIntersecting},{threshold:.05}).observe(el);
   return r});
 addEventListener('resize',()=>rails.forEach(r=>requestAnimationFrame(r.fan)));
@@ -372,243 +475,109 @@ addEventListener('resize',()=>rails.forEach(r=>requestAnimationFrame(r.fan)));
 let lastW=0;(function live(now){requestAnimationFrame(live);if(RM||now-lastW<55)return;lastW=now;const t=now/1000;
   rails.forEach(r=>{if(!r.vis||r.k!==tab)return;const o=r.items[r.c];if(o&&!o.classList.contains('on'))pal(r.k,()=>paint(o.querySelector('canvas'),o.dataset.k,r.c+3,t))})})(0);
 
-/* ---------- porte ---------- */
-const tabs=[...document.querySelectorAll('[data-tab]')],seg=$('seg'),navcta=$('navcta');
-let tab=location.hash==='#build'?'build':'ib';
-let spinning=null,XMODE=1;
-const SEGD={ib:'Community, Sala Pro, formazione',build:'Siti, app, gestionali, AI'};
-function swap(prev,k){
-  const out=$('p-'+prev),inn=$('p-'+k),dir=k==='build'?1:-1;
-  if(spinning){spinning.forEach(a=>a.finish());spinning=null}
-  const origin=el=>{const r=el.getBoundingClientRect(),y=Math.min(r.height,Math.max(0,innerHeight/2-r.top));return '50% '+y+'px -'+Math.round(r.width*.55)+'px'};
-  const done=()=>{spinning=null;rails.forEach(r=>{if(r.k===k)requestAnimationFrame(r.fan)})};
-  let A,B;
-  if(XMODE===1){ /* cilindro */
-    out.style.transformOrigin=origin(out);
-    A=[[{transform:'rotateY(0deg)',opacity:1},{transform:'rotateY('+(-dir*88)+'deg)',opacity:.2}],{duration:380,easing:'cubic-bezier(.55,0,.8,.2)'}];
-    B=()=>{inn.style.transformOrigin=origin(inn);return [inn.animate([{transform:'rotateY('+(dir*88)+'deg)',opacity:.2},{transform:'rotateY(0deg)',opacity:1}],{duration:620,easing:'cubic-bezier(.15,.85,.25,1)'})]};
-  }else if(XMODE===2){ /* scorrimento a cascata: i blocchi entrano uno dopo l'altro */
-    A=[[{transform:'translateX(0)',opacity:1},{transform:'translateX('+(-dir*35)+'%)',opacity:0}],{duration:300,easing:'cubic-bezier(.5,0,.8,.3)'}];
-    B=()=>[...inn.querySelector('.w').children].map((c,i)=>c.animate([{transform:'translateX('+(dir*70)+'px)',opacity:0},{transform:'translateX(0)',opacity:1}],{duration:560,delay:i*70,easing:'cubic-bezier(.15,.85,.25,1)',fill:'backwards'}));
-  }else{ /* tuffo in profondità: la vecchia pagina ti viene incontro e svanisce, la nuova emerge da dietro */
-    out.style.transformOrigin=origin(out).replace(/ -\d+px$/,'');
-    A=[[{transform:'scale(1)',opacity:1,filter:'blur(0)'},{transform:'scale(1.12)',opacity:0,filter:'blur(6px)'}],{duration:340,easing:'cubic-bezier(.5,0,.8,.3)'}];
-    B=()=>{inn.style.transformOrigin=origin(inn).replace(/ -\d+px$/,'');return [inn.animate([{transform:'scale(.88) translateY(24px)',opacity:0,filter:'blur(6px)'},{transform:'scale(1) translateY(0)',opacity:1,filter:'blur(0)'}],{duration:600,easing:'cubic-bezier(.15,.85,.25,1)'})]};
-  }
-  out.hidden=false;inn.hidden=true;
-  const a1=out.animate(A[0],A[1]);spinning=[a1];
-  a1.onfinish=()=>{out.hidden=true;inn.hidden=false;const bs=B();spinning=bs;Promise.all(bs.map(b=>b.finished)).then(done,done)};
-}
-function show(k,go){const prev=tab;tab=k;if(prev!==k&&!RM)tabs.forEach(b=>{b.classList.remove('lit');if(b.dataset.tab===k){void b.offsetWidth;b.classList.add('lit')}});seg.dataset.on=k;{const d=$('segdesc');d.textContent=SEGD[k];d.animate&&!RM&&d.animate([{opacity:0,transform:'translateY(4px)'},{opacity:1,transform:'none'}],{duration:400,easing:'ease-out'})}document.documentElement.dataset.door=k;tabs.forEach(b=>b.setAttribute('aria-selected',String(b.dataset.tab===k)));
-  navcta.textContent=k==='build'?'Scrivimi':'Entra gratis';navcta.dataset.link=k==='build'?'whatsapp':'telegram';setLink(navcta);
-  if(go&&!RM&&prev!==k&&$('p-'+prev).animate)swap(prev,k);else{$('p-build').hidden=k!=='build';$('p-ib').hidden=k!=='ib'}
-  rails.forEach(r=>{if(r.k===k)requestAnimationFrame(r.fan)});
-  if(go){const y=$('doors').getBoundingClientRect().top+scrollY;if(go==='jump'||scrollY>y)scrollTo({top:y,behavior:RM?'auto':'smooth'})}
-  window.__door&&window.__door(k)}
-tabs.forEach(b=>b.addEventListener('click',()=>{if(b.dataset.tab!==tab){show(b.dataset.tab,true);track('scheda',b.dataset.tab);try{history.replaceState(null,'','#'+b.dataset.tab)}catch(e){}}}));
-addEventListener('hashchange',()=>{if(location.hash==='#build'||location.hash==='#ib')show(location.hash.slice(1),false)});
-show(tab,false);
+/* ---------- una sola porta: Trading ---------- */
+let tab='ib';document.documentElement.dataset.door='ib';
+rails.forEach(r=>requestAnimationFrame(r.fan));
 document.querySelectorAll('a[data-link]').forEach(setLink);
-track('visita',tab);
+track('visita','ib');
 
-/* ---------- apertura: testi guidati dallo scroll ---------- */
+/* ---------- apertura: PREZZO LIVE nitido al centro, intorno TRE ANELLI DI PUNTI inclinati come un giroscopio che orbitano a velocità diverse, ognuno con un punto arancione in testa. Parallasse e trascinamento col mouse ---------- */
 const open=$('open'),stick=$('stick');
-
-/* ---------- apertura: 9.000 particelle che, mentre scorri, diventano un sito a strati, poi un grafico a candele, poi le due porte ---------- */
 if(!window.THREE){stick.style.display='none';return}
-const cv=$('gl');let R;
-try{R=new THREE.WebGLRenderer({canvas:cv,antialias:false,alpha:true,powerPreference:'high-performance'})}catch(e){stick.style.display='none';return}
+const cv=$('gl');let R;try{R=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true,powerPreference:'high-performance'})}catch(e){stick.style.display='none';return}
 const PR=Math.min(devicePixelRatio||1,2);R.setPixelRatio(PR);
-const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(34,1,.1,80);cam.position.set(0,.3,11);cam.lookAt(0,0,0);
-const N=innerWidth<500?7000:10000,rr2=seedR(2026),rnd=()=>rr2();
-
-/* campionatore: sceglie un pezzo di forma in base al peso e ci mette un punto sopra */
-function sampler(parts){const tot=parts.reduce((a,p)=>a+p.w,0);return ()=>{let x=rnd()*tot,p=parts[0];for(const q of parts){if((x-=q.w)<=0){p=q;break}}return p.f()}}
-const rect=(x0,y0,x1,y1,z,c,j=.03)=>()=>({p:[x0+rnd()*(x1-x0),y0+rnd()*(y1-y0),z+(rnd()-.5)*j],c});
-const edge=(x0,y0,x1,y1,z,c)=>()=>{const w=x1-x0,h=y1-y0,t=rnd()*2*(w+h);let x,y;if(t<w){x=x0+t;y=y0}else if(t<w+h){x=x1;y=y0+t-w}else if(t<2*w+h){x=x1-(t-w-h);y=y1}else{x=x0;y=y1-(t-2*w-h)}return{p:[x+(rnd()-.5)*.02,y+(rnd()-.5)*.02,z+(rnd()-.5)*.02],c}};
-const ICE=[.66,.80,.89],BR=[.86,.93,1],WH=[.95,.97,1],GRY=[.36,.45,.55],DN=[.42,.47,.53],CO=[.91,.73,.66];
-
-/* 0 · nebulosa iniziale */
-const S0=()=>{const shell=rnd()<.72,th=rnd()*6.283,ph=Math.acos(2*rnd()-1),r=shell?2.05+(rnd()-.5)*.08:2*Math.cbrt(rnd());return{p:[r*Math.sin(ph)*Math.cos(th),r*Math.cos(ph),r*Math.sin(ph)*Math.sin(th)],c:rnd()<.3?WH:ICE}};
-/* 1 · un sito "esploso" in tre strati */
-const S1=sampler([
-  {w:3,f:edge(-2.2,-1.5,2.2,1.5,-.9,GRY)},{w:1.1,f:rect(-2.2,1.25,2.2,1.5,-.9,GRY)},
-  {w:1,f:rect(-1.9,.55,.4,.78,0,WH)},{w:.6,f:rect(-1.9,.22,-.2,.38,0,ICE)},{w:.7,f:rect(-1.9,-.3,-.95,-.02,0,BR,.06)},
-  {w:1,f:edge(.55,-.35,1.95,.95,0,ICE)},{w:.35,f:rect(.55,-.35,1.95,.95,0,GRY)},
-  ...[-1.45,0,1.45].map(cx=>({w:.9,f:edge(cx-.6,-1.35,cx+.6,-.6,.9,ICE)})),
-  ...[-1.45,0,1.45].map((cx,i)=>({w:.25,f:rect(cx-.48,-.8,cx+.1,-.72,.9,i===1?BR:WH)}))
-]);
-/* 2 · grafico a candele in 3D con la linea del prezzo e la base a griglia */
-const series=[];{let p=0;for(let i=0;i<26;i++){p+=(rnd()-.45)*.55-p*.05;series.push(p)}}
-const smin=Math.min(...series),smax=Math.max(...series),Y=v=>-1.05+(v-smin)/(smax-smin)*2.4;
-const parts2=[];
-for(let i=0;i<24;i++){const x=-2.3+i*.2,o=series[i],c=series[i+1],up=c>=o,top=Y(Math.max(o,c)),bot=Y(Math.min(o,c)),col=up?BR:DN;
-  parts2.push({w:.25+(top-bot)*1.6,f:()=>({p:[x+(rnd()-.5)*.13,bot+rnd()*Math.max(.04,top-bot),(rnd()-.5)*.22],c:col})});
-  parts2.push({w:.12,f:()=>({p:[x,bot-.12+rnd()*(top-bot+.24),0],c:col})})}
-parts2.push({w:3.2,f:()=>{const u=rnd()*23,i=Math.floor(u),f=u-i,v=series[i+1]+(series[i+2]-series[i+1])*f;return{p:[-2.3+u*.2,Y(v),.18],c:WH}}});
-parts2.push({w:1.4,f:()=>{const gx=Math.round(rnd()*12)/12,gz=rnd();return rnd()<.5?{p:[-2.45+gx*4.9,-1.45,-1+gz*2],c:GRY}:{p:[-2.45+rnd()*4.9,-1.45,-1+Math.round(gz*6)/6*2],c:GRY}}});
-const S2=sampler(parts2);
-/* 3 · le due porte */
-const S3=sampler([{w:3,f:edge(-2.05,-1.4,-.25,1.4,0,WH)},{w:.7,f:rect(-2.05,-1.4,-.25,1.4,-.05,GRY,.1)},{w:3,f:edge(.25,-1.4,2.05,1.4,0,ICE)},{w:.7,f:rect(.25,-1.4,2.05,1.4,-.05,GRY,.1)}]);
-
-const shapes=[S0,S1,S2,S3],geo=new THREE.BufferGeometry();
-shapes.forEach((S,k)=>{const P=new Float32Array(N*3),C=new Float32Array(N*3);for(let i=0;i<N;i++){const s=S();P.set(s.p,i*3);C.set(s.c,i*3)}
-  geo.setAttribute(k?'p'+k:'position',new THREE.BufferAttribute(P,3));geo.setAttribute('c'+k,new THREE.BufferAttribute(C,3))});
-{const A=new Float32Array(N);for(let i=0;i<N;i++)A[i]=rnd();geo.setAttribute('rnd',new THREE.BufferAttribute(A,1))}
-const mat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
-  uniforms:{uP:{value:0},uT:{value:0},uI:{value:0},uS:{value:1},uTint:{value:new THREE.Vector3(1,1,1)}},
-  vertexShader:`
-    attribute vec3 p1,p2,p3,c0,c1,c2,c3;attribute float rnd;
-    uniform float uP,uT,uI,uS;uniform vec3 uTint;varying vec3 vC;varying float vA;
-    float st(float k){return smoothstep(0.,1.,clamp((uP-k)*1.5-rnd*.5,0.,1.));}
-    void main(){
-      float f0=st(0.),f1=st(1.),f2=st(2.);
-      vec3 b1=vec3(p1.xy,p1.z*(1.+.45*sin(uT*.8)));
-      float floorP=step(-1.4,p2.y);
-      vec3 b2=p2+vec3(0.,sin(uT*1.5-p2.x*1.7)*.09*floorP,0.);
-      vec3 p=mix(mix(mix(position,b1,f0),b2,f1),p3,f2);
-      float wB=f0*(1.-f1),wM=f1*(1.-f2);
-      float scanM=mod(uT*1.3,6.4)-3.2,scanB=1.7-mod(uT*.9,3.6);
-      float dM=(p2.x-scanM)*2.6,dB=(p1.y-scanB)*3.2;
-      float glow=wM*exp(-dM*dM)*floorP+wB*exp(-dB*dB);
-      vC=mix(mix(mix(c0,c1,f0),c2,f1),c3,f2);
-      float w=4.*(f0*(1.-f0)+f1*(1.-f1)+f2*(1.-f2));
-      vec3 n=vec3(sin(uT*1.1+rnd*61.),cos(uT*.9+rnd*37.),sin(uT*1.3+rnd*23.));
-      p+=n*(.55*w+.018);
-      float ii=smoothstep(0.,1.,clamp(uI*1.4-rnd*.4,0.,1.));
-      p=mix(position*3.2+n*2.5,p,ii);
-      vec4 mv=modelViewMatrix*vec4(p,1.);
-      gl_PointSize=uS*(.55+rnd*.9)*(10./-mv.z)*(1.+w*.6);
-      vA=ii*(.75+.25*sin(uT*2.+rnd*40.))*(1.+glow*1.6);
-      vC=mix(vC,vec3(1.),glow*.6)*uTint;
-      gl_Position=projectionMatrix*mv;}`,
-  fragmentShader:`
-    varying vec3 vC;varying float vA;
-    void main(){float d=length(gl_PointCoord-.5);float a=1.-smoothstep(0.,.5,d);a*=a;gl_FragColor=vec4(vC*a*vA,a*vA);}`});
-const pts=new THREE.Points(geo,mat);pts.frustumCulled=false;scene.add(pts);
-
+const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(32,1,.1,80);cam.position.set(0,0,10);
+const G=new THREE.Group();scene.add(G);
+const rr2=seedR(3),rnd=()=>rr2();
+const RINGS=[{r:2.6,tx:1.15,tz:.25,sp:.22,n:420},{r:2.95,tx:.55,tz:-.65,sp:-.16,n:460},{r:3.3,tx:1.45,tz:1.1,sp:.11,n:500}];
+const vsh=`attribute float rnd;uniform float uT,uI,uS;varying float vA;varying vec3 vC;
+  void main(){vec4 mv=modelViewMatrix*vec4(position,1.);float depth=smoothstep(-3.,3.,(modelMatrix*vec4(position,1.)).z);
+    float head=step(.995,rnd);                       /* il punto in testa: più grande e arancione */
+    gl_PointSize=uS*(1.1+depth*1.2+head*3.5)*(9./-mv.z);
+    vA=uI*mix(.18,.85,depth)*(1.+head*.6);vC=mix(vec3(.66,.80,.89),vec3(1.,.54,.30),head);gl_Position=projectionMatrix*mv;}`;
+const fsh=`varying float vA;varying vec3 vC;void main(){float d=length(gl_PointCoord-.5);float a=1.-smoothstep(.15,.5,d);gl_FragColor=vec4(vC*a*vA,a*vA);}`;
+const rings=RINGS.map(cfg=>{const g=new THREE.Group();g.rotation.set(cfg.tx,0,cfg.tz);G.add(g);
+  const P=new Float32Array(cfg.n*3),RN=new Float32Array(cfg.n);for(let i=0;i<cfg.n;i++){const a=i/cfg.n*6.283,j=(rnd()-.5)*.05;P.set([Math.cos(a)*(cfg.r+j),(rnd()-.5)*.04,Math.sin(a)*(cfg.r+j)],i*3);RN[i]=i===0?1:rnd()*.99}
+  const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(P,3));geo.setAttribute('rnd',new THREE.BufferAttribute(RN,1));
+  const mat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,uniforms:{uT:{value:0},uI:{value:0},uS:{value:1}},vertexShader:vsh,fragmentShader:fsh});
+  g.add(new THREE.Points(geo,mat));return{g,mat,sp:cfg.sp}});
+/* linea del prezzo reale dell'oro: ultime 24 ore a 15 minuti (96 chiusure PAXG/USDT per la forma, aggiornate live) riscalate sullo SPOT XAU vero (gold-api.com, ogni 15 s), così il numero alla fine è il prezzo dell'oro e la forma è quella della giornata */
+const NL=96,LW=7.2,lposA=new Float32Array(NL*3);
+const lgeo=new THREE.BufferGeometry();lgeo.setAttribute('position',new THREE.BufferAttribute(lposA,3));
+const lmat=new THREE.LineBasicMaterial({color:0xff8a4c,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false});G.add(new THREE.Line(lgeo,lmat));
+const ldot=new THREE.PointsMaterial({color:0xff8a4c,size:.045,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false});G.add(new THREE.Points(lgeo,ldot));
+const hg=new THREE.BufferGeometry();hg.setAttribute('position',new THREE.BufferAttribute(new Float32Array(3),3));
+const hm=new THREE.PointsMaterial({color:0xffe1cc,size:.22,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false});G.add(new THREE.Points(hg,hm));
+let series=null,price=0,spot=0;
+const fmt=v=>v.toFixed(1).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+function lineUpdate(){if(!series)return;const last=series[series.length-1],k=spot&&last?spot/last:1,u=series.slice(-NL).map(v=>v*k),mn=Math.min(...u),mx=Math.max(...u),sp=(mx-mn)||1;price=u[u.length-1];
+  for(let i=0;i<NL;i++){lposA[i*3]=-LW/2+i*(LW/(NL-1));lposA[i*3+1]=((u[i]-mn)/sp-.5)*1.6;lposA[i*3+2]=.6}
+  lgeo.attributes.position.needsUpdate=true;hg.attributes.position.setXYZ(0,lposA[(NL-1)*3],lposA[(NL-1)*3+1],.6);hg.attributes.position.needsUpdate=true}
+const spotFetch=()=>fetch('https://api.gold-api.com/price/XAU').then(r=>r.json()).then(d=>{if(d&&d.price>0){spot=+d.price;lineUpdate()}}).catch(()=>{});
+spotFetch();setInterval(spotFetch,15000);
+fetch('https://api.binance.com/api/v3/klines?symbol=PAXGUSDT&interval=15m&limit='+NL).then(r=>r.json()).then(k=>{if(!Array.isArray(k)||!k.length)return;series=k.map(c=>+c[4]);lineUpdate();
+  const ws=()=>{try{const w=new WebSocket('wss://stream.binance.com:9443/ws/paxgusdt@kline_15m');
+    w.onmessage=e=>{const d=JSON.parse(e.data).k;if(!d)return;series[series.length-1]=+d.c;if(d.x){series.push(+d.c);series.shift()}lineUpdate()};
+    w.onclose=()=>setTimeout(ws,5000)}catch(e){}};ws()}).catch(()=>{});
 let lw=0,lh=0;
-function size(){const w=stick.clientWidth,h=stick.clientHeight;if(!w||!h)return;if(w===lw&&Math.abs(h-lh)<160&&lh)return;lw=w;lh=h;R.setSize(w,h,false);cam.aspect=w/h;
-  const fit=Math.min(1,(w/h)/1.3);cam.position.z=9.3+(1-fit)*8;cam.updateProjectionMatrix();mat.uniforms.uS.value=PR*(w<500?2.6:3.2)}
+function size(){const w=stick.clientWidth,h=stick.clientHeight;if(!w||!h)return;if(w===lw&&Math.abs(h-lh)<160&&lh)return;lw=w;lh=h;R.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();
+  const vh=2*cam.position.z*Math.tan(cam.fov*Math.PI/360),vw=vh*cam.aspect;G.scale.setScalar(Math.min(vw*.92,vh*.6)/(2*3.3));rings.forEach(r=>r.mat.uniforms.uS.value=PR*(w<500?1.2:1.4))}
 addEventListener('resize',size);size();
-let px=0,py=0,drag=0,vel=0,down=false,lx=0;
+let px=0,py=0,drag=0,dvel=0,down=false,lx=0;
 cv.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse')return;down=true;lx=e.clientX});addEventListener('pointerup',()=>down=false);
-addEventListener('pointermove',e=>{if(e.pointerType!=='mouse')return;px=e.clientX/innerWidth-.5;py=e.clientY/innerHeight-.5;if(down){vel=(e.clientX-lx)*.008;drag+=vel;lx=e.clientX}});
+addEventListener('pointermove',e=>{if(e.pointerType!=='mouse')return;px=e.clientX/innerWidth-.5;py=e.clientY/innerHeight-.5;if(down){dvel=(e.clientX-lx)*.005;drag+=dvel;lx=e.clientX}});
 let vis=true;new IntersectionObserver(e=>{vis=e[0].isIntersecting},{threshold:0}).observe(open);
-/* tappe dello scroll: nebulosa → sito → grafico → porte */
-let doorStage=tab==='build'?1:2;window.__door=k=>{doorStage=k==='build'?1:2};
-const VIEW=[[.25,0],[ -.32,.1],[-.55,.22],[0,.05]];
-const t0=performance.now();let last=t0,spin=0,uP=0,ry=0,rx=0;
-function frame(now){
-  requestAnimationFrame(frame);
-  if(!vis||document.hidden){last=now;return}
-  const dt=Math.min(.05,(now-last)/1000);last=now;const t=now/1000;
-  const goal=RM||now-t0>1300?doorStage:0;uP+=(goal-uP)*Math.min(1,dt*(RM?40:2.6));
-  {const tv=mat.uniforms.uTint.value,b=doorStage===1;const q=Math.min(1,dt*3);tv.x+=((b?1.08:1)-tv.x)*q;tv.y+=((b?.86:1)-tv.y)*q;tv.z+=((b?1.3:1)-tv.z)*q}
-  mat.uniforms.uP.value=uP;mat.uniforms.uT.value=RM?0:t;mat.uniforms.uI.value=RM?1:Math.min(1,(now-t0)/1800);
-  if(!down){drag+=vel;vel*=.93}
-  const k=Math.min(3,Math.max(0,uP)),i=Math.min(2,Math.floor(k)),f=k-i,vy=VIEW[i][0]+(VIEW[i+1][0]-VIEW[i][0])*f,vx=VIEW[i][1]+(VIEW[i+1][1]-VIEW[i][1])*f;
-  spin+=RM?0:dt*.35*Math.max(0,1-uP*1.5);
-  ry+=(vy-ry)*Math.min(1,dt*3);rx+=(vx-rx)*Math.min(1,dt*3);
-  pts.rotation.set(rx+py*.1,spin+ry+drag+px*.35+(RM?0:Math.sin(t*.3)*.06),0);
-  pts.position.y=-.25+(RM?0:Math.sin(t*.8)*.04);
-  R.render(scene,cam);
-}
-requestAnimationFrame(frame);
-})();
-</script>
-<script>
-/* ---------- configuratore 3D di Sviluppo: scegli cosa costruire e cosa deve fare, il prodotto si monta davanti a te ---------- */
-(()=>{
-const $=id=>document.getElementById(id),RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
-const typeBtns=[...document.querySelectorAll('#cfgType button')],featBtns=[...document.querySelectorAll('#cfgFeat button')],msg=$('cfgMsg'),tag=$('cfgTag'),send=document.querySelector('[data-msg="cfgMsg"]');
-const TL={sito:'un sito',app:"un'app",gestionale:'un gestionale',ai:"un'automazione con l'AI",trading:'un tool per il trading',altro:'un progetto su misura'};
-const TN={sito:'Sito',app:'App',gestionale:'Gestionale',ai:'AI',trading:'Tool trading',altro:'Su misura'};
-const FL={login:'accesso utenti',pagamenti:'pagamenti',prenotazioni:'prenotazioni',notifiche:'notifiche',dashboard:'dashboard',ai:'assistente AI'};
-let type='sito';const feats=new Set(['dashboard']);
-function text(){const f=[...feats].map(k=>FL[k]);const list=f.length>1?f.slice(0,-1).join(', ')+' e '+f[f.length-1]:f[0];
-  msg.textContent='Ciao! Ti scrivo dal link in bio. Vorrei costruire '+TL[type]+(f.length?' con '+list:'')+'.';
-  send.dataset.cfg=type+(feats.size?': '+[...feats].join(', '):'');
-  tag.textContent='Il tuo progetto · '+TN[type]+(f.length?' + '+f.length+(f.length>1?' funzioni':' funzione'):'')}
-typeBtns.forEach(b=>b.addEventListener('click',()=>{type=b.dataset.t;typeBtns.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));text();window.__cfg&&window.__cfg()}));
-featBtns.forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.f;feats.has(k)?feats.delete(k):feats.add(k);b.setAttribute('aria-pressed',String(feats.has(k)));text();window.__cfg&&window.__cfg()}));
-typeBtns.forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.t===type)));featBtns.forEach(x=>x.setAttribute('aria-pressed',String(feats.has(x.dataset.f))));text();
-
-if(!window.THREE||!window.__paint)return;
-const paint=window.__paint,pal=window.__pal,rr=window.__rr,VIO=window.__VIO;
-const cv=$('cfgc'),stage=cv.parentElement;let R;
-try{R=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true,powerPreference:'high-performance'})}catch(e){return}
-R.setPixelRatio(Math.min(devicePixelRatio||1,2));R.outputEncoding=THREE.sRGBEncoding;R.toneMapping=THREE.ACESFilmicToneMapping;
-const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(35,1,.1,60);cam.position.set(0,.2,8.6);
-{const env=new THREE.Scene(),pm=new THREE.PMREMGenerator(R);env.background=new THREE.Color(0x0c0b14);
- [[0,6,0,12,3,0xffffff],[-7,1,2,3,8,0xB9A6FF],[7,0,-2,3,8,0x9fbad0],[0,1,8,6,2.5,0x8f80c8]].forEach(([x,y,z,w,h,c])=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({color:c,side:THREE.DoubleSide}));m.position.set(x,y,z);m.lookAt(0,0,0);env.add(m)});
- scene.environment=pm.fromScene(env,.04).texture}
-scene.add(new THREE.HemisphereLight(0xE6DEFF,0x0b0b12,.45));const key=new THREE.DirectionalLight(0xffffff,1.1);key.position.set(3,5,7);scene.add(key);
-const root=new THREE.Group();scene.add(root);
-function rbox(w,h,d,r){const s=new THREE.Shape(),x=-w/2,y=-h/2;s.moveTo(x+r,y);s.lineTo(x+w-r,y);s.quadraticCurveTo(x+w,y,x+w,y+r);s.lineTo(x+w,y+h-r);s.quadraticCurveTo(x+w,y+h,x+w-r,y+h);s.lineTo(x+r,y+h);s.quadraticCurveTo(x,y+h,x,y+h-r);s.lineTo(x,y+r);s.quadraticCurveTo(x,y,x+r,y);
-  const g=new THREE.ExtrudeGeometry(s,{depth:d,bevelEnabled:true,bevelSize:.03,bevelThickness:.03,bevelSegments:3,curveSegments:10});g.translate(0,0,-d/2);return g}
-const metal=new THREE.MeshStandardMaterial({color:0x221f30,metalness:.8,roughness:.25,envMapIntensity:1.3});
-function tex(c){const t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;t.anisotropy=4;return t}
-/* schermo verticale per l'app */
-function paintApp(c,t){const g=c.getContext('2d'),W=300,H=600,A=VIO.acc,a=x=>'rgba('+VIO.rgb+','+x+')';g.clearRect(0,0,W,H);g.save();rr(g,0,0,W,H,40);g.clip();
-  const bg=g.createLinearGradient(0,0,0,H);bg.addColorStop(0,VIO.s0);bg.addColorStop(1,VIO.s1);g.fillStyle=bg;g.fillRect(0,0,W,H);
-  g.fillStyle='#05050a';rr(g,105,14,90,26,13);g.fill();g.fillStyle=A;g.beginPath();g.arc(46,86,17,0,7);g.fill();g.fillStyle='rgba(242,244,245,.35)';rr(g,74,76,110,10,5);g.fill();
-  const gr=g.createLinearGradient(20,124,280,290);gr.addColorStop(0,a(.6));gr.addColorStop(1,'rgba(255,255,255,.04)');g.fillStyle=gr;rr(g,20,124,260,160,22);g.fill();
-  g.strokeStyle='#F2F4F5';g.lineWidth=3;g.beginPath();for(let i=0;i<11;i++){const x=36+i*23,y=236-Math.sin(i*.6+t*1.2)*22-i*4;i?g.lineTo(x,y):g.moveTo(x,y)}g.stroke();
-  const on=Math.floor(t*.8)%4;for(let i=0;i<4;i++){const y=304+i*56;g.fillStyle='rgba(255,255,255,.06)';rr(g,20,y,260,46,14);g.fill();g.fillStyle='rgba(242,244,245,.35)';rr(g,36,y+18,100,10,5);g.fill();
-    g.fillStyle=i===on?A:'rgba(255,255,255,.15)';rr(g,222,y+11,42,24,12);g.fill();g.fillStyle='#fff';g.beginPath();g.arc(i===on?252:234,y+23,9,0,7);g.fill()}
-  g.restore()}
-const DEV={sito:{w:3.2,h:2,k:'landing'},app:{w:1.3,h:2.6,portrait:true},gestionale:{w:3.4,h:1.9,k:'sheet'},ai:{w:3,h:1.9,k:'chat',orb:true},trading:{w:3.2,h:2,k:'indicator'},altro:{w:2.8,h:1.75,k:'flow'}};
-const devs={};
-function device(t){if(devs[t])return devs[t];const d=DEV[t],g=new THREE.Group();g.add(new THREE.Mesh(rbox(d.w+.16,d.h+.16,.1,d.portrait?.22:.14),metal));
-  const c=document.createElement('canvas');if(d.portrait){c.width=300;c.height=600;paintApp(c,0)}else{c.width=640;c.height=400;pal('build',()=>paint(c,d.k,9,0))}
-  const tx=tex(c),m=new THREE.MeshBasicMaterial({map:tx,transparent:true,toneMapped:false}),s=new THREE.Mesh(new THREE.PlaneGeometry(d.w,d.h),m);s.position.z=.085;g.add(s);
-  let orb=null;if(d.orb){orb=new THREE.Mesh(new THREE.SphereGeometry(.34,32,24),new THREE.MeshStandardMaterial({color:0xB9A6FF,emissive:0x6a52d8,emissiveIntensity:.9,metalness:.2,roughness:.25}));orb.position.set(d.w/2-.1,d.h/2+.05,.5);g.add(orb)}
-  g.scale.setScalar(.001);root.add(g);return devs[t]={g,c,tx,d,orb,v:0}}
-/* moduli delle funzioni: tessere che volano accanto al prodotto */
-const FEAT=['login','pagamenti','prenotazioni','notifiche','dashboard','ai'],FNAME={login:'Accesso',pagamenti:'Pagamenti',prenotazioni:'Prenotazioni',notifiche:'Notifiche',dashboard:'Dashboard',ai:'Assistente AI'};
-function icon(g,k,x,y,A){g.strokeStyle=A;g.fillStyle=A;g.lineWidth=5;g.lineCap='round';
-  if(k==='login'){g.beginPath();g.arc(x,y-8,12,Math.PI,0);g.stroke();rr(g,x-18,y-6,36,28,6);g.fill()}
-  if(k==='pagamenti'){rr(g,x-24,y-16,48,32,6);g.stroke();g.fillRect(x-24,y-8,48,7)}
-  if(k==='prenotazioni'){rr(g,x-22,y-18,44,38,6);g.stroke();for(let i=0;i<3;i++)for(let j=0;j<2;j++)g.fillRect(x-14+i*11,y-4+j*10,6,6)}
-  if(k==='notifiche'){g.beginPath();g.moveTo(x-16,y+10);g.quadraticCurveTo(x-14,y-20,x,y-20);g.quadraticCurveTo(x+14,y-20,x+16,y+10);g.closePath();g.stroke();g.beginPath();g.arc(x+14,y-16,6,0,7);g.fill()}
-  if(k==='dashboard'){[14,26,20,34].forEach((h,i)=>g.fillRect(x-22+i*12,y+16-h,8,h))}
-  if(k==='ai'){g.beginPath();for(let i=0;i<8;i++){const r=i%2?7:20,a=i*Math.PI/4;g.lineTo(x+Math.cos(a)*r,y+Math.sin(a)*r)}g.closePath();g.fill()}}
-const mods=FEAT.map((k,i)=>{const c=document.createElement('canvas');c.width=320;c.height=200;const g=c.getContext('2d');
-  rr(g,2,2,316,196,26);const bg=g.createLinearGradient(0,0,320,200);bg.addColorStop(0,'rgba(48,42,78,.98)');bg.addColorStop(1,'rgba(20,18,32,.98)');g.fillStyle=bg;g.fill();g.strokeStyle='rgba(185,166,255,.6)';g.lineWidth=3;g.stroke();
-  icon(g,k,64,100,VIO.acc);g.fillStyle='#F2F4F5';g.font='600 30px sans-serif';g.fillText(FNAME[k],108,92);g.fillStyle='rgba(242,244,245,.4)';g.font='500 20px sans-serif';g.fillText('modulo',110,126);
-  const grp=new THREE.Group(),m=new THREE.Mesh(new THREE.PlaneGeometry(1.12,.7),new THREE.MeshBasicMaterial({map:tex(c),transparent:true,toneMapped:false}));grp.add(m);grp.scale.setScalar(.001);root.add(grp);
-  return {k,g:grp,v:0,ph:i*1.3}});
-const SLOT=[[-1,1.05,.95],[1,1.05,.95],[-1,-.1,1.35],[1,-.1,1.35],[-1,-1.2,.85],[1,-1.2,.85]];
-const ease=u=>u<.5?4*u*u*u:1-Math.pow(-2*u+2,3)/2;
-let lw=0,lh=0;function size(){const w=stage.clientWidth,h=stage.clientHeight;if(!w||!h)return;if(w===lw&&Math.abs(h-lh)<160&&lh)return;lw=w;lh=h;R.setSize(w,h,false);cam.aspect=w/h;cam.position.z=8.6+Math.max(0,1.4-w/h)*5;cam.updateProjectionMatrix()}
-addEventListener('resize',size);size();
-let drag=0,vel=0,down=false,lx=0;cv.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse')return;down=true;lx=e.clientX});addEventListener('pointerup',()=>down=false);
-addEventListener('pointermove',e=>{if(e.pointerType!=='mouse'||!down)return;vel=(e.clientX-lx)*.01;drag+=vel;lx=e.clientX});
-let vis=false;new IntersectionObserver(e=>{vis=e[0].isIntersecting},{threshold:0}).observe(stage);
-let bump=0;window.__cfg=()=>{bump=1;size()};
-let last=performance.now(),lp=0;
-function frame(now){requestAnimationFrame(frame);
-  if(!vis||document.hidden||document.documentElement.dataset.door!=='build'){last=now;return}
-  if(!lw)size();
-  const dt=Math.min(.05,(now-last)/1000);last=now;const t=now/1000,k=Math.min(1,dt*(RM?40:5));
-  if(!down){drag+=vel;vel*=.92}bump*=.9;
-  root.rotation.y=(RM?0:Math.sin(t*.4)*.32)+drag;root.rotation.x=RM?0:Math.sin(t*.3)*.05;
-  device(type);
-  for(const key in devs){const d=devs[key],tg=key===type?1:0;d.v+=(tg-d.v)*k;const e=ease(Math.min(1,Math.max(0,d.v)));
-    d.g.visible=d.v>.01;d.g.scale.setScalar(.001+e*(1+bump*.04));d.g.rotation.y=(1-e)*(tg?1.4:-1.4);d.g.position.set(0,(RM?0:Math.sin(t*.9)*.05),(1-e)*-2);
-    if(d.orb){d.orb.position.y=d.d.h/2+.05+(RM?0:Math.sin(t*2)*.08);d.orb.scale.setScalar(1+(RM?0:Math.sin(t*3)*.06))}}
-  const cur=devs[type],wx=cur.d.w/2+.75;
-  mods.forEach((m,i)=>{const tg=feats.has(m.k)?1:0;m.v+=(tg-m.v)*Math.min(1,dt*(RM?40:4));const e=ease(Math.min(1,Math.max(0,m.v)));const s=SLOT[i];
-    m.g.visible=m.v>.01;const x=s[0]*Math.min(wx,2.25),y=s[1]+(RM?0:Math.sin(t*1.1+m.ph)*.06),z=s[2];
-    m.g.position.set(x*(.4+.6*e),y,z+(1-e)*3.5);m.g.rotation.set(0,-s[0]*.38+(1-e)*s[0]*1.5,0);m.g.scale.setScalar(.001+e*.95)});
-  if(!RM&&now-lp>120){lp=now;if(cur.d.portrait)paintApp(cur.c,t);else pal('build',()=>paint(cur.c,cur.d.k,9,t));cur.tx.needsUpdate=true}
+const t0=performance.now();let last=t0;
+function frame(now){requestAnimationFrame(frame);if(!vis||document.hidden){last=now;return}
+  const dt=Math.min(.05,(now-last)/1000);last=now;const t=RM?0:now/1000,et=(now-t0)/1000,ii=RM?1:Math.min(1,et/1.4);
+  if(!down){drag+=dvel;dvel*=.9}
+  rings.forEach(r=>{r.g.rotation.y+=RM?0:dt*r.sp;r.mat.uniforms.uT.value=t;r.mat.uniforms.uI.value=ii});
+  const vh=2*cam.position.z*Math.tan(cam.fov*Math.PI/360);
+  G.rotation.set(py*.15,drag+px*.35,0);G.position.set(0,vh*(stick.clientHeight>stick.clientWidth?.3:.29),0);
+  lmat.opacity=ii*.95;ldot.opacity=ii*.6;hm.opacity=ii*(.7+.3*Math.sin(t*4.));
+  if(series&&price){G.updateMatrixWorld();const o=(NL-1)*3,e=new THREE.Vector3(lposA[o],lposA[o+1],.6).applyMatrix4(G.matrixWorld).project(cam),s0=new THREE.Vector3(lposA[0],Math.max(...Array.from(lposA).filter((_,i)=>i%3===1))+.18,.6).applyMatrix4(G.matrixWorld).project(cam);
+    const lab=$('live');lab.hidden=false;lab.style.left=((e.x*.5+.5)*stick.clientWidth)+'px';lab.style.top=((-e.y*.5+.5)*stick.clientHeight)+'px';lab.style.opacity=ii;
+    const txt=fmt(price)+' $';if(lab.dataset.t!==txt){lab.dataset.t=txt;lab.innerHTML='<i></i>'+txt}
+    const eye=$('px');eye.hidden=false;eye.style.left=((s0.x*.5+.5)*stick.clientWidth)+'px';eye.style.top=((-s0.y*.5+.5)*stick.clientHeight)+'px';eye.style.opacity=ii;if(!eye.dataset.t){eye.dataset.t='1';eye.textContent='Oro spot · 24 ore · in tempo reale'}}
   R.render(scene,cam)}
 requestAnimationFrame(frame);
 })();
 </script>
-
-
-
+<script>
+/* seta scura in movimento dietro la sezione delle carte: rumore deformato con bande sottili, caldo arancio e un filo di azzurro; a metà risoluzione, ferma quando non è in vista */
+(()=>{const cv=document.getElementById('silk');if(!cv||!window.THREE)return;
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;let R;try{R=new THREE.WebGLRenderer({canvas:cv,antialias:false,alpha:false,powerPreference:'low-power'})}catch(e){return}
+R.setPixelRatio(Math.min(devicePixelRatio||1,2)*.5);
+const scene=new THREE.Scene(),cam=new THREE.OrthographicCamera(-1,1,1,-1,0,1);
+const mat=new THREE.ShaderMaterial({uniforms:{uT:{value:0},uRes:{value:new THREE.Vector2(1,1)}},
+vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,0.,1.);}`,
+fragmentShader:`precision highp float;uniform float uT;uniform vec2 uRes;varying vec2 vUv;
+float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
+float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*n(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return v;}
+void main(){vec2 uv=vUv;uv.x*=uRes.x/uRes.y;float t=uT*.05;
+ vec2 q=vec2(fbm(uv*1.1+t),fbm(uv*1.1-t*.7));
+ vec2 r=vec2(fbm(uv*1.4+q*1.8+vec2(1.7,9.2)+t*.5),fbm(uv*1.4+q*1.8+vec2(8.3,2.8)-t*.4));
+ float f=fbm(uv*1.3+r*2.);
+ float silk=pow(smoothstep(.36,.78,f),2.6);
+ float band=pow(abs(sin(f*7.+uv.y*2.5-t*2.)),10.);
+ float rib=pow(abs(sin(f*11.-t*1.3)),40.);
+ vec3 base=vec3(.043,.055,.07);vec3 warm=vec3(1.,.56,.30);vec3 ice=vec3(.66,.80,.89);
+ vec3 col=base+warm*silk*.12*(.35+.65*band)+ice*band*.04*(1.-silk)+warm*pow(band,2.)*silk*.14+vec3(1.,.85,.7)*rib*silk*.10;
+ gl_FragColor=vec4(col,1.);}`});
+scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),mat));
+let vis=true,lw=0,lh=0,last=0;
+function size(){const w=innerWidth,h=innerHeight;if(!w||!h||(w===lw&&h===lh))return;lw=w;lh=h;R.setSize(w,h,false);mat.uniforms.uRes.value.set(w,h)}
+function frame(now){requestAnimationFrame(frame);if(!vis||document.hidden||now-last<33)return;last=now;size();mat.uniforms.uT.value=RM?0:now/1000;R.render(scene,cam)}
+addEventListener('resize',()=>{lw=0;size()});size();requestAnimationFrame(frame)})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+/* scorrimento fluido e blocchi che salgono mentre arrivano */
+(()=>{const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(window.Lenis&&!RM){const l=new Lenis({lerp:.1});(function r(t){l.raf(t);requestAnimationFrame(r)})(0)}
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{rootMargin:'0px 0px -8% 0px'});
+  document.querySelectorAll('.rv').forEach(el=>RM?el.classList.add('in'):io.observe(el))})();
+</script>
 </body>
 </html>

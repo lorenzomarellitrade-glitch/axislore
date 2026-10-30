@@ -54,3 +54,16 @@ q{display:block;quotes:none;color:var(--soft);font-size:15px}
 .ea .box .k span b{font-size:13.5px;color:var(--soft);font-weight:600;letter-spacing:0}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chips span{padding:7px 11px;border-radius:99px;background:var(--bg2);font-size:13px;font-weight:500;color:var(--soft)}
+.min{display:flex;gap:14px;align-items:center}
+.min>b{flex:none;color:var(--fg);font-size:clamp(26px,7vw,34px);font-weight:650;letter-spacing:-.045em;line-height:1}
+.min p{font-size:14px;color:var(--soft)}
+.accs{display:grid;gap:8px}
+.acc{border-radius:16px;background:var(--tile);border:1px solid var(--line);overflow:hidden}
+.acc summary{display:flex;gap:12px;align-items:center;padding:12px 14px;color:var(--fg);font-weight:600;cursor:pointer;list-style:none}
+.acc summary::-webkit-details-marker{display:none}
+.acc summary::after{content:"+";margin-left:auto;font:500 16px/1 var(--fm);color:var(--mute);transition:transform .2s}
+.acc[open] summary::after{transform:rotate(45deg)}
+.acc summary i{flex:none;width:28px;height:28px;border-radius:99px;display:flex;align-items:center;justify-content:center;font:500 12px/1 var(--fm);font-style:normal;color:var(--acc);border:1px solid rgba(169,203,228,.4)}
+.acc p{margin:0;padding:0 14px 12px;font-size:14.5px}
+.acc p.note{margin:0;font-size:12.5px}
+.faq .acc summary{font-size:15px;font-weight:500}
