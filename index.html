@@ -249,6 +249,7 @@ html{background:var(--bg)}body{background:transparent}
 .face{overflow:hidden}
 .face canvas{border-bottom:1px solid rgba(255,255,255,.1)}
 .face .tx{position:relative}
+@media (pointer:coarse){.tile,.obj{backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%)}.nav{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}}
 
 .badge{background:rgba(11,14,18,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .sec{margin-top:40px}
@@ -548,7 +549,7 @@ requestAnimationFrame(frame);
 /* seta scura in movimento dietro la sezione delle carte: rumore deformato con bande sottili, caldo arancio e un filo di azzurro; a metà risoluzione, ferma quando non è in vista */
 (()=>{const cv=document.getElementById('silk');if(!cv||!window.THREE)return;
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;let R;try{R=new THREE.WebGLRenderer({canvas:cv,antialias:false,alpha:false,powerPreference:'low-power'})}catch(e){return}
-R.setPixelRatio(Math.min(devicePixelRatio||1,2)*.5);
+const TOUCH=matchMedia('(pointer:coarse)').matches;R.setPixelRatio(Math.min(devicePixelRatio||1,2)*(TOUCH?.3:.5));
 const scene=new THREE.Scene(),cam=new THREE.OrthographicCamera(-1,1,1,-1,0,1);
 const mat=new THREE.ShaderMaterial({uniforms:{uT:{value:0},uRes:{value:new THREE.Vector2(1,1)}},
 vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,0.,1.);}`,
@@ -569,14 +570,15 @@ void main(){vec2 uv=vUv;uv.x*=uRes.x/uRes.y;float t=uT*.05;
 scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),mat));
 let vis=true,lw=0,lh=0,last=0;
 function size(){const w=innerWidth,h=innerHeight;if(!w||!h||(w===lw&&h===lh))return;lw=w;lh=h;R.setSize(w,h,false);mat.uniforms.uRes.value.set(w,h)}
-function frame(now){requestAnimationFrame(frame);if(!vis||document.hidden||now-last<33)return;last=now;size();mat.uniforms.uT.value=RM?0:now/1000;R.render(scene,cam)}
+function frame(now){requestAnimationFrame(frame);if(!vis||document.hidden||now-last<(TOUCH?50:33))return;last=now;size();mat.uniforms.uT.value=RM?0:now/1000;R.render(scene,cam)}
 addEventListener('resize',()=>{lw=0;size()});size();requestAnimationFrame(frame)})();
 </script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
 <script>
 /* scorrimento fluido e blocchi che salgono mentre arrivano */
 (()=>{const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(window.Lenis&&!RM){const l=new Lenis({lerp:.1});(function r(t){l.raf(t);requestAnimationFrame(r)})(0)}
+  /* scorrimento fluido solo con il mouse: sul telefono (anche nel browser di Instagram) il nativo è più leggero e più stabile */
+  if(window.Lenis&&!RM&&matchMedia('(hover:hover) and (pointer:fine)').matches){const l=new Lenis({lerp:.1});(function r(t){l.raf(t);requestAnimationFrame(r)})(0)}
   const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{rootMargin:'0px 0px -8% 0px'});
   document.querySelectorAll('.rv').forEach(el=>RM?el.classList.add('in'):io.observe(el))})();
 </script>
