@@ -511,7 +511,7 @@ const hm=new THREE.PointsMaterial({color:0xffe1cc,size:.22,transparent:true,opac
 let series=null,price=0,spot=0;
 const fmt=v=>v.toFixed(1).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');
 function lineUpdate(){if(!series)return;const last=series[series.length-1],k=spot&&last?spot/last:1,u=series.slice(-NL).map(v=>v*k),mn=Math.min(...u),mx=Math.max(...u),sp=(mx-mn)||1;price=u[u.length-1];
-  const portrait=stick.clientHeight>stick.clientWidth,x0=portrait?-LW*.4:-LW/2,xEnd=portrait?LW*.2:LW/2,span=xEnd-x0;
+  const portrait=stick.clientHeight>stick.clientWidth,x0=portrait?-LW*.4:-LW/2,xEnd=portrait?LW*.1:LW/2,span=xEnd-x0;
   for(let i=0;i<NL;i++){lposA[i*3]=x0+i*(span/(NL-1));lposA[i*3+1]=((u[i]-mn)/sp-.5)*1.6;lposA[i*3+2]=.6}
   lgeo.attributes.position.needsUpdate=true;hg.attributes.position.setXYZ(0,lposA[(NL-1)*3],lposA[(NL-1)*3+1],.6);hg.attributes.position.needsUpdate=true}
 const spotFetch=()=>fetch('https://api.gold-api.com/price/XAU').then(r=>r.json()).then(d=>{if(d&&d.price>0){spot=+d.price;lineUpdate()}}).catch(()=>{});
@@ -534,7 +534,7 @@ function frame(now){requestAnimationFrame(frame);if(!vis||document.hidden){last=
   if(!down){drag+=dvel;dvel*=.9}
   rings.forEach(r=>{r.g.rotation.y+=RM?0:dt*r.sp;r.mat.uniforms.uT.value=t;r.mat.uniforms.uI.value=ii});
   const vh=2*cam.position.z*Math.tan(cam.fov*Math.PI/360);
-  G.rotation.set(py*.15,drag+px*.35,0);G.position.set(0,vh*(stick.clientHeight>stick.clientWidth?.3:.29),0);
+  G.rotation.set(py*.15,drag+px*.35,0);G.position.set(0,vh*(stick.clientHeight>stick.clientWidth?.2:.29),0);
   lmat.opacity=ii*.95;ldot.opacity=ii*.6;hm.opacity=ii*(.7+.3*Math.sin(t*4.));
   if(series&&price){G.updateMatrixWorld();const o=(NL-1)*3,e=new THREE.Vector3(lposA[o],lposA[o+1],.6).applyMatrix4(G.matrixWorld).project(cam),s0=new THREE.Vector3(lposA[0],Math.max(...Array.from(lposA).filter((_,i)=>i%3===1))+.18,.6).applyMatrix4(G.matrixWorld).project(cam);
     const lab=$('live');lab.hidden=false;lab.style.left=Math.min((e.x*.5+.5)*stick.clientWidth,stick.clientWidth-14-lab.offsetWidth-14)+'px';lab.style.top=((-e.y*.5+.5)*stick.clientHeight)+'px';lab.style.opacity=ii;
