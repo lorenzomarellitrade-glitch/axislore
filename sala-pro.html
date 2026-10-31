@@ -64,7 +64,7 @@
       <div class="rseg" role="tablist"><button role="tab" data-r="mese" aria-selected="true">Mese</button><button role="tab" data-r="ieri" aria-selected="false">Ieri</button><button role="tab" data-r="oggi" aria-selected="false">Oggi</button></div>
       <div class="rn" id="ris-n"></div>
       <div class="rl" id="ris-l"></div>
-      <p class="rw"><b>Risultati passati: non garantiscono risultati futuri. Non è consulenza.</b> Sono i segnali della sala, non i risultati di un conto: i pips sono contati dal primo prezzo d'ingresso, stop loss compresi; "a target" vuol dire che è stato raggiunto almeno il primo obiettivo (TP1). "Né target né stop": segnali che nei dati di Inizia Ora non risultano né a target né a stop. I giorni con «—» non sono nei dati. Dati di Inizia Ora.</p>
+      <p class="rw"><b>Risultati passati: non garantiscono risultati futuri. Non è consulenza.</b> Sono le idee operative della sala, non i risultati di un conto: i pips sono contati dal primo prezzo d'ingresso, stop loss compresi; "a target" vuol dire che è stato raggiunto almeno il primo obiettivo (TP1). "Né target né stop": idee che nei dati di Inizia Ora non risultano né a target né a stop. I giorni con «—» non sono nei dati. Dati di Inizia Ora.</p>
     </div>
   <h2>Come si accede.</h2>
   <ol class="steps"><li>Entri nella community Telegram</li><li>Tocchi il pulsante Sala Pro</li><li>Invii la richiesta di accesso</li></ol>
@@ -103,13 +103,13 @@
 <script src="traccia.js"></script>
 <script>
 /* risultati della sala: funzione Supabase "risultati" (copia dei dati dell'Academy del team). Se non risponde, il blocco resta nascosto.
-   Mese = calendario lun-ven come nell'Academy (tocca un giorno per il dettaglio); Ieri e Oggi = elenco dei segnali */
+   Mese = calendario lun-ven come nell'Academy (tocca un giorno per il dettaglio); Ieri e Oggi = elenco delle idee operative */
 (()=>{const URL_RIS=CRM.url+'/functions/v1/risultati',$=id=>document.getElementById(id),box=$('ris');if(!box||!CRM.url)return;
   const MESI=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
   const f=n=>(n>0?'+':n<0?'−':'')+Math.abs(n).toLocaleString('it-IT'),gm=g=>{const[a,m,d]=g.split('-');return d+'/'+m};
   const somma=gg=>gg.reduce((t,g)=>({segnali:t.segnali+g.segnali,a_target:t.a_target+g.a_target,stop:t.stop+g.stop,pips:t.pips+g.pips}),{segnali:0,a_target:0,stop:0,pips:0});
-  const numeri=r=>[[r.segnali,'segnali'],[r.a_target,'a target'],[r.stop,'stop loss'],[r.segnali-r.a_target-r.stop,'né target né stop'],[f(r.pips),'pips']].map(x=>'<div><b>'+x[0]+'</b><span>'+x[1]+'</span></div>').join('');
-  const giorno=g=>g?gm(g.giorno)+' · '+g.segnali+' segnali · '+g.a_target+' a target · '+g.stop+' stop'+(g.segnali-g.a_target-g.stop?' · '+(g.segnali-g.a_target-g.stop)+' né target né stop':'')+' · <b>'+f(g.pips)+' pips</b>':'';
+  const numeri=r=>[[r.segnali,'idee operative'],[r.a_target,'a target'],[r.stop,'stop loss'],[r.segnali-r.a_target-r.stop,'né target né stop'],[f(r.pips),'pips']].map(x=>'<div><b>'+x[0]+'</b><span>'+x[1]+'</span></div>').join('');
+  const giorno=g=>g?gm(g.giorno)+' · '+g.segnali+' idee · '+g.a_target+' a target · '+g.stop+' stop'+(g.segnali-g.a_target-g.stop?' · '+(g.segnali-g.a_target-g.stop)+' né target né stop':'')+' · <b>'+f(g.pips)+' pips</b>':'';
   fetch(URL_RIS).then(r=>r.ok?r.json():Promise.reject()).then(D=>{if(!D||!D.mese)return;
     const M=D.mese,per={};M.giorni.forEach(g=>per[g.giorno]=g);
     function calendario(){const[a,m]=M.mese.split('-').map(Number),ultimo=new Date(a,m,0).getDate(),dw=(new Date(a,m-1,1).getDay()+6)%7;
@@ -128,7 +128,7 @@
         $('ris-l').innerHTML=calendario();$('ris-l').classList.add('mese');
         $('ris-l').querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{$('ris-l').querySelectorAll('.d.s').forEach(x=>x.classList.remove('s'));b.classList.add('s');$('ris-d').innerHTML=giorno(per[b.dataset.g])})}
       else{$('ris-agg').textContent='agg. '+(D.aggiornato||'');$('ris-l').classList.remove('mese');
-        const l=r.lista||[];$('ris-l').innerHTML=l.length?l.map(x=>'<p><span>'+x.ora+'</span><span>'+x.dir+' · '+(x.esito||'in corso')+(x.aperto?' · aperto':'')+'</span><span>'+f(x.pips)+'</span></p>').join(''):'<p><span>Nessun segnale</span></p>'}}
+        const l=r.lista||[];$('ris-l').innerHTML=l.length?l.map(x=>'<p><span>'+x.ora+'</span><span>'+x.dir+' · '+(x.esito||'in corso')+(x.aperto?' · aperto':'')+'</span><span>'+f(x.pips)+'</span></p>').join(''):'<p><span>Nessuna idea operativa</span></p>'}}
     box.querySelectorAll('.rseg button').forEach(b=>b.onclick=()=>{vedi(b.dataset.r);track('click','ib/risultati-'+b.dataset.r)});
     vedi('mese');box.hidden=false}).catch(()=>{})})();
 </script>
